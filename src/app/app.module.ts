@@ -5,6 +5,11 @@ import {AppComponent} from './page/app/app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRouteSubmodule} from './app.route.submodule';
 
+import { BarreNavigationComponent } from './component/barre-navigation/barre-navigation.component';
+import { CreationUtilisateurComponent } from './component/creation-utilisateur/creation-utilisateur.component';
+import { LoginComponent } from './component/login/login.component';
+
+
 import {VignetteFormationComponent} from './component/vignette-formation/vignette-formation.component';
 import {ExerciceComponent} from './component/exercice/exercice.component';
 import {ContenuCycleFormationComponent} from './component/contenu-cycle-formation/contenu-cycle-formation.component';
@@ -26,7 +31,10 @@ import {ExecModule} from './module/exec/exec.module';
     AccueilComponent,
     CycleFormationComponent,
     FormationComponent,
-    MarkdownComponent
+    MarkdownComponent,
+    BarreNavigationComponent,
+    CreationUtilisateurComponent,
+    LoginComponent
   ],
   imports: [
     BrowserAnimationsModule,
