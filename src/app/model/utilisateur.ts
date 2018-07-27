@@ -3,5 +3,3 @@ export interface IUser {
   login?: string;
   motDePasse?: string;
 }
-
-

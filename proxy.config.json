@@ -1,4 +1,3 @@
-<<<<<<< e6bcc39e5abc35902a0a4b53a46ecc22e01ac997
 {
   "/rest": {
     "target": "http://localhost:8333",
@@ -13,19 +12,3 @@
     "logLevel": "debug"
   }
 }
-=======
-{
-  "/rest": {
-    "target": "http://localhost:8333",
-    "changeOrigin": true,
-    "ws": false,
-    "logLevel": "debug"
-  },
-  "/ws": {
-    "target": "http://localhost:8333",
-    "changeOrigin": true,
-    "ws": true,
-    "logLevel": "debug"
-  }
-}
->>>>>>> Bandeau + ecran basique de création utilisateur

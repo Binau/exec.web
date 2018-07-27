@@ -12,9 +12,9 @@ export class GestionUtilisateurService {
   constructor( private http: HttpClient) {}
 
   creationUtilisateur(utilisateur: IUser) {
-    this.http.post( '/rest/utilisateur/enregistrer', utilisateur).subscribe(res => {
+      this.http.post( '/rest/utilisateur/enregistrer', utilisateur).subscribe(res => {
     })
-  }
+}
 
 }
 
