@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GestionUtilisateurService } from "../../service/gestion-utilisateur.service"
 
 @Component({
   selector: 'app-creation-utilisateur',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CreationUtilisateurComponent implements OnInit {
 
-  constructor() { }
+  constructor(private gestionUtilisateurService: GestionUtilisateurService) { }
+  email: string = '';
+  login: string = '';
+  motDePasse: string = '';
 
   ngOnInit() {
+  }
+
+  creationUtilisateur() {
+    this.gestionUtilisateurService.creationUtilisateur(
+      {email: "",
+        login : "",
+        motDePasse:""
+      }
+    )
   }
 
 }

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
 
 import { AppComponent } from './component/app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -41,6 +42,7 @@ import { LoginComponent } from './component/login/login.component';
     // Angular
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     // Routing
     AppRouteSubmodule,
   ],

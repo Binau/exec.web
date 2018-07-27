@@ -1,0 +1,14 @@
+{
+  "/rest": {
+    "target": "http://localhost:8333",
+    "changeOrigin": true,
+    "ws": false,
+    "logLevel": "debug"
+  },
+  "/ws": {
+    "target": "http://localhost:8333",
+    "changeOrigin": true,
+    "ws": true,
+    "logLevel": "debug"
+  }
+}
