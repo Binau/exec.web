@@ -1,5 +1,7 @@
 
-import {NgModule} from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
 
 import {AppComponent} from './page/app/app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -8,7 +10,6 @@ import {AppRouteSubmodule} from './app.route.submodule';
 import { BarreNavigationComponent } from './component/barre-navigation/barre-navigation.component';
 import { CreationUtilisateurComponent } from './component/creation-utilisateur/creation-utilisateur.component';
 import { LoginComponent } from './component/login/login.component';
-
 
 import {VignetteFormationComponent} from './component/vignette-formation/vignette-formation.component';
 import {ExerciceComponent} from './component/exercice/exercice.component';
@@ -38,7 +39,8 @@ import {ExecModule} from './module/exec/exec.module';
   ],
   imports: [
     BrowserAnimationsModule,
-    // Routing principal
+    HttpClientModule,
+    // Routing
     AppRouteSubmodule,
     // Module en commun
     CommonModule,

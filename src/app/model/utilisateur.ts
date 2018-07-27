@@ -1,5 +1,7 @@
 export interface IUser {
-    email?: string;
-    login?: string;
-    motDePasse?: string;
-  }
+  email?: string;
+  login?: string;
+  motDePasse?: string;
+}
+
+
