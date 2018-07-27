@@ -1,25 +1,24 @@
+<header>
+  <h1>{{idImage}}</h1>
+</header>
+<div *ngFor='let code of uiCodeToInject'
+     class='editor'>
+  <input type='text' [(ngModel)]='code.filePath'/>
 
-  <header>
-    <h1>{{idImage}}</h1>
-  </header>
-  <div *ngFor='let code of uiCodeToInject'
-       class='editor'>
-    <input type='text' [(ngModel)]='code.filePath' />
-
-    <app-code-mirror
-      [(value)]='code.code'></app-code-mirror>
+  <app-code-mirror
+    [(value)]='code.code' [options]='codeMirrorOpts'></app-code-mirror>
 
 
-  </div>
+</div>
 
-  <button (click)='onClickExec()'>Run</button>
+<button (click)='onClickExec()'>Run</button>
 
-  <details open>
-    <summary>Console</summary>
-    <pre *ngFor='let log of logs' class='log' [ngClass]='{
+<details open>
+  <summary>Console</summary>
+  <pre *ngFor='let log of logs' class='log' [ngClass]='{
     "error":log.isError,
     "info":log.isInfo
     }'>{{log.message}}</pre>
-  </details>
+</details>
 
 

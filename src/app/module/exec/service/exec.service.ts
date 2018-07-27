@@ -4,16 +4,24 @@ import {WebsocketClient, WebsocketService} from '../../common/service/websocket.
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExecLog, ExecParam} from '../api/exec.ws.api';
+import {TestInfos} from '../api/test.http.api';
+import {promise} from 'selenium-webdriver';
+import {ExecInfos} from '../api/exec.http.api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExecService {
 
+  private static EXEC_URL = 'rest/execs';
 
   constructor(
     private wsService: WebsocketService,
     private http: HttpClient) {
+  }
+
+  public async getExecInfos(imageId: string): Promise<ExecInfos> {
+    return this.http.get<ExecInfos>(`${ExecService.EXEC_URL}/${imageId}`).toPromise();
   }
 
   public async exec(param: ExecParam): Promise<Observable<ExecLog>> {

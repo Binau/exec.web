@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ExecLog, ExecParam, FileToInject} from '../../api/exec.ws.api';
 import {ExecService} from '../../service/exec.service';
+import {CodeMirrorApi} from '../../../common/component/code-mirror.api';
 
 
 @Component({
@@ -11,16 +12,13 @@ import {ExecService} from '../../service/exec.service';
 })
 export class ExecComponent implements OnInit {
 
-
   // Id de l'image vers laquelle sera teste le code
   @Input() idImage: string;
-  @Input() code: string;
 
-  // todo template ?
-  // todo default file
   public uiCodeToInject: FileToInject[];
 
   public logs: ExecLog[];
+  public codeMirrorOpts: CodeMirrorApi = {};
 
   constructor(
     private execService: ExecService) {
@@ -28,19 +26,20 @@ export class ExecComponent implements OnInit {
 
   public async ngOnInit() {
     console.log('Affichage du composant ExecComponent', this.idImage);
-    //
-
-    // Todo Requetage pour avoir les infos pour cette image ?
 
     this.initUi();
   }
 
-  private initUi(): void {
+  private async initUi(): Promise<void> {
+
+    const execInfos = await this.execService.getExecInfos(this.idImage);
+
     this.uiCodeToInject = [{
-      filePath: 'src/index.js',
-      code: this.code
+      filePath: execInfos.bootFileName,
+      code: execInfos.bootFileTemplate
     }];
 
+    this.codeMirrorOpts.langage = execInfos.langage;
   }
 
   private mapUiToWs(): ExecParam {

@@ -9,6 +9,7 @@ export class ExecParam {
     idImage: string;
     // Codes à injecter
     files: FileToInject[];
+
 }
 
 
