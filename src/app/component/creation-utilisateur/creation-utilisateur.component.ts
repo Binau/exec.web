@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GestionUtilisateurService } from "../../service/gestion-utilisateur.service"
+import {IUser} from "../../model/utilisateur";
 
 @Component({
   selector: 'app-creation-utilisateur',
@@ -9,20 +10,13 @@ import { GestionUtilisateurService } from "../../service/gestion-utilisateur.ser
 export class CreationUtilisateurComponent implements OnInit {
 
   constructor(private gestionUtilisateurService: GestionUtilisateurService) { }
-  email: string = '';
-  login: string = '';
-  motDePasse: string = '';
+  utilisateur : IUser ={};
 
   ngOnInit() {
   }
 
   creationUtilisateur() {
-    this.gestionUtilisateurService.creationUtilisateur(
-      {email: "",
-        login : "",
-        motDePasse:""
-      }
-    )
+    this.gestionUtilisateurService.creationUtilisateur(this.utilisateur);
   }
 
 }
