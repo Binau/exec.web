@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { IFormation } from 'src/app/model/formation';
+import { IFormation } from '../../model/formation';
 import { ICycleFormation } from '../../model/cycle-formation';
 
 @Component({

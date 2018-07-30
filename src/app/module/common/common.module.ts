@@ -4,6 +4,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {CodeMirrorComponent} from './component/code-mirror.component';
+import {MarkdownComponent} from './component/markdown/markdown.component';
+
 
 @NgModule({
   imports: [],
@@ -13,10 +15,13 @@ import {CodeMirrorComponent} from './component/code-mirror.component';
     FormsModule,
     BrowserModule,
     HttpClientModule,
-    CodeMirrorComponent
+    // Projet
+    CodeMirrorComponent,
+    MarkdownComponent
   ],
   declarations: [
-    CodeMirrorComponent
+    CodeMirrorComponent,
+    MarkdownComponent
   ]
 })
 export class CommonModule {
