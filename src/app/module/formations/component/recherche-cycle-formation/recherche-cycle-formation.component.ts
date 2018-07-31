@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ICycleFormation } from 'src/app/model/cycle-formation';
+import { ICycleFormation } from '../../model/cycle-formation';
 
 @Component({
   selector: 'app-recherche-cycle-formation',
