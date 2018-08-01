@@ -7,13 +7,20 @@ import {IUser} from "../model/utilisateur";
 })
 export class GestionUtilisateurService {
 
-  path = "http://localhost:4200/rest";
-
   constructor( private http: HttpClient) {}
 
   creationUtilisateur(utilisateur: IUser) {
       this.http.post( '/rest/utilisateur/enregistrer', utilisateur).subscribe(res => {
     })
+  }
+
+  login(utilisateur: IUser) {
+    this.http.post( '/rest/utilisateur/login', utilisateur).subscribe(res => {
+
+      // TODO récupérer le token et l'enregistrer dans le localstorage
+      //localStorage.setItem('token',res.token)
+      console.log(res);
+  })
 }
 
 }
