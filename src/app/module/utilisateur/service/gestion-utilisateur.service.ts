@@ -16,10 +16,7 @@ export class GestionUtilisateurService {
 
   login(utilisateur: IUser) {
     this.http.post( '/rest/utilisateur/login', utilisateur).subscribe(res => {
-
-      // TODO récupérer le token et l'enregistrer dans le localstorage
-      //localStorage.setItem('token',res.token)
-      console.log(res);
+      localStorage.setItem('token',res['token']);
   })
 }
 
