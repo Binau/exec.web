@@ -6,7 +6,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {CodeMirrorComponent} from './component/code-mirror.component';
 import {MarkdownComponent} from './component/markdown/markdown.component';
 
-
 @NgModule({
   imports: [],
   exports: [
