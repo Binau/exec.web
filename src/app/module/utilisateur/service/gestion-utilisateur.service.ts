@@ -7,7 +7,13 @@ import {IUser} from "../model/utilisateur";
 })
 export class GestionUtilisateurService {
 
+  TOKEN_KEY = 'token';
+
   constructor( private http: HttpClient) {}
+
+  get token() {
+    return localStorage.getItem(this.TOKEN_KEY)
+  }
 
   creationUtilisateur(utilisateur: IUser) {
       this.http.post( '/rest/utilisateur/enregistrer', utilisateur).subscribe(res => {
@@ -15,10 +21,10 @@ export class GestionUtilisateurService {
   }
 
   login(utilisateur: IUser) {
-    this.http.post( '/rest/utilisateur/login', utilisateur).subscribe(res => {
-      localStorage.setItem('token',res['token']);
-  })
-}
+    this.http.post<any>( '/rest/utilisateur/login', utilisateur).subscribe(res => {
+      localStorage.setItem(this.TOKEN_KEY, res.token);
+    })
+  }
 
 }
 

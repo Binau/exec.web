@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthentificationService} from '../../module/common/service/authentification.service';
 
 @Component({
   selector: 'app-barre-navigation',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BarreNavigationComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authentificationService: AuthentificationService) { }
 
   ngOnInit() {
+  }
+
+  logout() {
+    this.authentificationService.logout();
   }
 
 }

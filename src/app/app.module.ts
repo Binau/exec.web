@@ -28,6 +28,8 @@ import {UtilisateurModule} from './module/utilisateur/utilisateur.module';
     CommonModule,
     // Module pour les tests
     ExecModule,
+
+    // Autres
     FormationsModule,
     UtilisateurModule
   ],
