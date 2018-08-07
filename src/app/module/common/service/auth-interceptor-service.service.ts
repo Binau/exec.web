@@ -5,7 +5,8 @@ import { HttpInterceptor } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthInterceptorServiceService implements HttpInterceptor{
+
+export class AuthInterceptorService implements HttpInterceptor{
   constructor(private injector: Injector) {}
 
   TOKEN_KEY = 'token';
@@ -15,10 +16,14 @@ export class AuthInterceptorServiceService implements HttpInterceptor{
   }
 
   intercept(req, next) {
-
-      let authRequest = req.clone({
-          headers: req.headers.set('Authorization', 'token ' + this.token)
+    if(!!this.token){
+        let authRequest = req.clone({
+          headers: req.headers.set('Authorization', this.token)
       })
       return next.handle(authRequest)
+    }else{
+      return next.handle(req)
+    }
+
   }
 }

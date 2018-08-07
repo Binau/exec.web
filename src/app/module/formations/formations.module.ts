@@ -10,6 +10,11 @@ import {FormationComponent} from './component/formation/formation.component';
 
 import {FormationRouteSubmodule} from './formation-route-submodule.module';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
+import { AuthInterceptorService } from '../common/service/auth-interceptor-service.service'
+
+import {GestionFormationService} from './service/gestion-formation.service'
+
 @NgModule({
   imports: [
     // Angular
@@ -28,7 +33,12 @@ import {FormationRouteSubmodule} from './formation-route-submodule.module';
     RechercheCycleFormationComponent,
     CycleFormationComponent,
     FormationComponent
-  ]
+  ],
+  providers: [GestionFormationService, { 
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptorService,
+    multi: true
+  }],
 })
 
 export class FormationsModule { }

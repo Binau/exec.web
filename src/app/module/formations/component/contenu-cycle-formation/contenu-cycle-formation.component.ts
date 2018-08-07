@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 import { IFormation } from '../../model/formation';
 import { ICycleFormation } from '../../model/cycle-formation';
+import { GestionFormationService } from "../../service/gestion-formation.service"
 
 @Component({
   selector: 'app-contenu-cycle-formation',
@@ -21,17 +23,27 @@ export class ContenuCycleFormationComponent implements OnInit {
   formationsAvanceesFiltree :  IFormation[];
   cycleDeFormation : ICycleFormation;
 
-  constructor() { }
+  constructor(private gestionFormationService: GestionFormationService, private route:ActivatedRoute) { }
 
-  ngOnInit() {
-    console.log('ngOnInit');
+  public async ngOnInit() {
 
-    this.cycleDeFormation = {
-      id: '1',
-      nom: 'Javascript',
-      image: 'https://www.shareicon.net/data/128x128/2016/07/06/106573_software_512x512.png',
-      description: 'JavaScript is the most widely deployed language in the world. (uniquement des valeurs en durs ...'
-    };
+    let idCycleFormation = this.route.snapshot.paramMap.get('idCycleFormation');
+
+    // récupérer le cycle de formation sur lequel on est
+    this.cycleDeFormation = await this.gestionFormationService.recupererLeCycleDeFormationParSonId(idCycleFormation);
+
+    // récupérer les formations
+    let formations = await this.gestionFormationService.recupererLesFormationsDUnCycleDeFormations(idCycleFormation);
+
+    this.formationsDebutantsFiltree = formations.filter(formation => formation.niveauFormation ==='debutant');
+    this.formationsIntermediairesFiltree = formations.filter(formation => formation.niveauFormation ==='intermediaire');
+    this.formationsAvanceesFiltree = formations.filter(formation => formation.niveauFormation ==='avancee');
+    // débutant
+    // intermediaire
+    // confirmé
+
+
+    /*
 
 
     this.formationsDebutants =
@@ -102,7 +114,7 @@ export class ContenuCycleFormationComponent implements OnInit {
         progression : 50,
         image:'assets/avancee_2.jpg'}
     ];
-    this.formationsAvanceesFiltree = this.formationsAvancees;
+    this.formationsAvanceesFiltree = this.formationsAvancees;*/
 
   }
 

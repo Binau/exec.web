@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+
+
+import { GestionFormationService } from "../../service/gestion-formation.service"
 
 @Component({
   selector: 'app-formation',
@@ -11,9 +15,16 @@ export class FormationComponent implements OnInit {
   md2: string;
   md3: string;
 
-  constructor() { }
+  constructor(private gestionFormationService: GestionFormationService, private route:ActivatedRoute) { }
+
 
   ngOnInit() {
+
+    let idFormation = this.route.snapshot.paramMap.get('idFormation');
+
+    let maFormation = this.gestionFormationService.recupererUneFormationParSonId(idFormation);
+
+    // TODO voir comment stocker le md
 
 this.md =` 
 # Titre 1
