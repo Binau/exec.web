@@ -1,24 +1,47 @@
-<header>
-  <h1>{{idImage}}</h1>
-</header>
-<div *ngFor='let code of uiCodeToInject'
-     class='editor'>
-  <input type='text' [(ngModel)]='code.filePath'/>
+<div class='wrapper'>
 
-  <app-code-mirror
-    [(value)]='code.code' [options]='codeMirrorOpts'></app-code-mirror>
+  <header class='header'>
+    <span class='header-title'></span>
+    <span class='header-infos' [title]='idImage'>
+    <svg class='header-infosIcon'>
+      <image x="0" y="0" width="100%" height="100%"
+             xlink:href="assets/imgs/exec/question.svg"></image>
+    </svg>
+  </span>
 
+  </header>
 
-</div>
+  <nav class='tabs-wrapper'>
+    <ol class='tabs'>
+      <li *ngFor='let file of execBean.currentFiles' class='tab inactive'>
+        {{file.name}}
+        <svg class='tabs-editIcon' title='Modifier le fichier'>
+          <image x="0" y="0" width="100%" height="100%"
+                 xlink:href="assets/imgs/exec/param.svg"></image>
+        </svg>
+      </li>
+      <!--li class='tab active'>F2</li>
+      <li class='tab inactive'>F3</li-->
+    </ol>
+  </nav>
 
-<button (click)='onClickExec()'>Run</button>
+  <div *ngIf='!!execBean.selectedFile'
+       class='editor'>
 
-<details open>
-  <summary>Console</summary>
-  <pre *ngFor='let log of logs' class='log' [ngClass]='{
+    <app-code-mirror
+      [(value)]='execBean.selectedFile.content' [options]='codeMirrorOpts'></app-code-mirror>
+
+  </div>
+
+  <button (click)='onClickExec()'>Run</button>
+
+  <details open>
+    <summary>Console</summary>
+    <pre *ngFor='let log of logs' class='log' [ngClass]='{
     "error":log.isError,
     "info":log.isInfo
     }'>{{log.message}}</pre>
-</details>
+  </details>
 
 
+</div>

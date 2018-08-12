@@ -3,10 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {WebsocketClient, WebsocketService} from '../../common/service/websocket.service';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {ExecLog, ExecParam} from '../api/exec.ws.api';
-import {TestInfos} from '../api/test.http.api';
-import {promise} from 'selenium-webdriver';
-import {ExecInfos} from '../api/exec.http.api';
+import {ExecInfos, ExecLog, ExecParam} from '../api/exec.api';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +27,7 @@ export class ExecService {
     // Connexion au ws
     try {
       client = await this.wsService.connect(`/ws/exec`);
+
     } catch (e) {
       console.log(e);
     }

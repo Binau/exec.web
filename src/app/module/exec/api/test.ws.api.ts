@@ -1,4 +1,5 @@
-import {ExecLog} from "./exec.ws.api";
+import {ExecLog} from './exec.api';
+
 
 export class Code {
     title: string;

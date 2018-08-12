@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {ExecLog, ExecParam, FileToInject} from '../../api/exec.ws.api';
 import {ExecService} from '../../service/exec.service';
 import {CodeMirrorApi} from '../../../common/component/code-mirror.api';
+import {ExecComponentBean} from './exec.component.bean';
+import {ExecInfos, ExecLog, ExecParam, FileToInject} from '../../api/exec.api';
 
 
 @Component({
@@ -12,13 +13,15 @@ import {CodeMirrorApi} from '../../../common/component/code-mirror.api';
 })
 export class ExecComponent implements OnInit {
 
-  // Id de l'image vers laquelle sera teste le code
+  // Id de l'image vers laquelle sera testé le code
   @Input() idImage: string;
 
-  public uiCodeToInject: FileToInject[];
-
+  public execBean: ExecComponentBean = new ExecComponentBean();
+  
   public logs: ExecLog[];
   public codeMirrorOpts: CodeMirrorApi = {};
+
+  private componentFileIdIt = this.componentFileIdIterator();
 
   constructor(
     private execService: ExecService) {
@@ -30,22 +33,44 @@ export class ExecComponent implements OnInit {
     this.initUi();
   }
 
+  /**
+   * Initialisation des données ui
+   */
   private async initUi(): Promise<void> {
 
-    const execInfos = await this.execService.getExecInfos(this.idImage);
-
-    this.uiCodeToInject = [{
-      filePath: execInfos.bootFileName,
-      code: execInfos.bootFileTemplate
-    }];
-
+    // Recuperation des infos via api http
+    const execInfos: ExecInfos = await this.execService.getExecInfos(this.idImage);
     this.codeMirrorOpts.langage = execInfos.langage;
+
+    //
+    this.mapExecInfosToComponentBean(execInfos);
+    this.resetFilesFromOriginalFile();
+
   }
 
-  private mapUiToWs(): ExecParam {
+  private mapExecInfosToComponentBean(execInfos: ExecInfos) {
+    this.execBean.originalFiles.push({
+      id: this.componentFileIdIt.next().value,
+      name: execInfos.bootFileTemplate.filePath,
+      content: execInfos.bootFileTemplate.code
+    });
+    this.execBean.selectedFile = this.execBean.originalFiles[0];
+  }
+
+  private resetFilesFromOriginalFile() {
+    this.execBean.currentFiles.splice(0);
+    this.execBean.currentFiles.push(...this.execBean.originalFiles);
+  }
+
+  private mapComponentBeanToExecParam(): ExecParam {
     const execParam = new ExecParam();
     execParam.idImage = this.idImage;
-    execParam.files = this.uiCodeToInject;
+    execParam.files = this.execBean.currentFiles.map(f => {
+      return {
+        filePath: f.name,
+        code: f.content
+      };
+    });
 
     return execParam;
   }
@@ -55,7 +80,7 @@ export class ExecComponent implements OnInit {
 
     this.logs = [];
 
-    const obs: Observable<ExecLog> = await this.execService.exec(this.mapUiToWs());
+    const obs: Observable<ExecLog> = await this.execService.exec(this.mapComponentBeanToExecParam());
 
     obs.subscribe(
       (l) => this.logs.push(l),
@@ -66,12 +91,12 @@ export class ExecComponent implements OnInit {
           message: `Erreur : ${e.message}`
         });
       }, () => {
-        this.logs.push({
-          isInfo: true,
-          message: `Fin`
-        });
       });
 
   }
 
+  private* componentFileIdIterator(): IterableIterator<number> {
+    let id = 0;
+    while (true) yield id++;
+  }
 }
