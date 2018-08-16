@@ -7,9 +7,9 @@ import {FormationComponent} from './component/formation/formation.component';
 
 const routes: Routes = [
   { path: 'recherche-cycle-formation', component: RechercheCycleFormationComponent },
-  { path: 'contenu-cycle-formation/:id', component: ContenuCycleFormationComponent },
-  { path: 'cycle-formation/:id', component: VignetteFormationComponent },
-  { path: 'formation/:id', component: FormationComponent }
+  { path: 'contenu-cycle-formation/:idCycleFormation', component: ContenuCycleFormationComponent },
+  { path: 'cycle-formation/:idCycleFormation', component: VignetteFormationComponent },
+  { path: 'formation/:idFormation', component: FormationComponent }
 ];
 
 @NgModule({

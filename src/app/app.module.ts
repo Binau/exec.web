@@ -14,6 +14,7 @@ import {ExecModule} from './module/exec/exec.module';
 import {FormationsModule} from './module/formations/formations.module';
 import {UtilisateurModule} from './module/utilisateur/utilisateur.module';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,10 +29,11 @@ import {UtilisateurModule} from './module/utilisateur/utilisateur.module';
     CommonModule,
     // Module pour les tests
     ExecModule,
+
+    // Autres
     FormationsModule,
     UtilisateurModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

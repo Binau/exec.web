@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { GestionUtilisateurService } from "../../service/gestion-utilisateur.service"
+import {IUser} from "../../model/utilisateur";
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  utilisateur  : IUser ={};
+
+  constructor(private gestionUtilisateurService: GestionUtilisateurService, private router :Router) { }
 
   ngOnInit() {
+  }
+
+  
+  login() {
+    this.gestionUtilisateurService.login(this.utilisateur);
+    this.router.navigate(['/accueil']);
   }
 
 }
