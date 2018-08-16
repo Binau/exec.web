@@ -4,6 +4,8 @@ import {ExecRouteSubmodule} from './exec-route-submodule.module';
 import {TestComponent} from './component/test/test.component';
 import {TestsComponent} from './page/tests/tests.component';
 import { ExecComponent } from './component/exec/exec.component';
+import {ExecSvgComponent} from './component/exec-svg/exec-svg.component';
+import {DemoExecComponent} from './page/demo/demo-exec.component';
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import { ExecComponent } from './component/exec/exec.component';
   declarations: [
     TestComponent,
     ExecComponent,
-    TestsComponent
+    TestsComponent,
+    ExecSvgComponent,
+    DemoExecComponent
   ],
 
 })

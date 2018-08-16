@@ -38,7 +38,7 @@ export class TestsService {
     }
 
     // Envoi la requete d'execution
-    client.send(JSON.stringify(param));
+    client.observer.next(JSON.stringify(param));
 
     // Mapping de chaque resultats
     return client.observable.pipe(map<string, TestInfo>(m => JSON.parse(m)));

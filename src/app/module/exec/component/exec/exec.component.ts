@@ -1,7 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {ExecLog, ExecParam, FileToInject} from '../../api/exec.ws.api';
 import {ExecService} from '../../service/exec.service';
+import {CodeMirrorApi} from '../../../common/component/code-mirror/code-mirror.api';
+import {ExecComponentBean, ExecComponentFileBean} from './exec.component.bean';
+import {ExecInfos, ExecLog, ExecParam, FileToInject} from '../../api/exec.api';
 
 
 @Component({
@@ -11,54 +13,78 @@ import {ExecService} from '../../service/exec.service';
 })
 export class ExecComponent implements OnInit {
 
-
-  // Id de l'image vers laquelle sera teste le code
+  // Id de l'image vers laquelle sera testé le code
   @Input() idImage: string;
-  @Input() code: string;
 
-  // todo template ?
-  // todo default file
-  public uiCodeToInject: FileToInject[];
+  public execBean: ExecComponentBean = new ExecComponentBean();
 
   public logs: ExecLog[];
+  public codeMirrorOpts: CodeMirrorApi = {};
+
+  private componentFileIdIt = this.componentFileIdIterator();
+  private onClickWindowsListener = this.onClickWindows.bind(this);
 
   constructor(
+    private elementRef: ElementRef,
     private execService: ExecService) {
   }
 
   public async ngOnInit() {
     console.log('Affichage du composant ExecComponent', this.idImage);
+
+    // Recuperation des infos via api http
+    const execInfos: ExecInfos = await this.execService.getExecInfos(this.idImage);
+    this.codeMirrorOpts.langage = execInfos.langage;
+
     //
+    this.mapExecInfosToComponentBean(execInfos);
+    this.resetFilesFromOriginalFile();
+    this.selectFile(this.execBean.originalFiles[0]);
 
-    // Todo Requetage pour avoir les infos pour cette image ?
-
-    this.initUi();
+    // On surveille les clics sur le tabs wrapper
+    const tabsWrapper: HTMLElement = this.findHtmlChild('tabs-wrapper');
+    tabsWrapper.addEventListener('click', (e) => (e as any).tabsWrapperFlag = true);
   }
 
-  private initUi(): void {
-    this.uiCodeToInject = [{
-      filePath: 'src/index.js',
-      code: this.code
-    }];
-
+  public onClickEdit(): void {
+    this.execBean.inFilesEdition = true;
+    window.addEventListener('click', this.onClickWindowsListener);
   }
 
-  private mapUiToWs(): ExecParam {
-    const execParam = new ExecParam();
-    execParam.idImage = this.idImage;
-    execParam.files = this.uiCodeToInject;
-
-    return execParam;
+  private onClickWindows(e): void {
+    if (!(e as any).tabsWrapperFlag) {
+      this.execBean.inFilesEdition = false;
+      window.removeEventListener('click', this.onClickWindowsListener);
+    }
   }
 
+  public onClickAdd(): void {
+    const newFile: ExecComponentFileBean = this.createNewFile();
+    this.execBean.currentFiles.push(newFile);
+    this.selectFile(newFile);
+
+    // Selection du input ajouté pour simplifier le nommage
+    setTimeout(() => {
+      const input: HTMLInputElement = this.findHtmlChild(newFile.inputTagName);
+      input.select();
+    });
+  }
+
+  public onClickFile(file: ExecComponentFileBean): void {
+    this.selectFile(file);
+  }
+
+  public onClickDelete(file: ExecComponentFileBean): void {
+    this.deleteFile(file);
+  }
 
   public async onClickExec() {
 
     this.logs = [];
+    this.execBean.inExecution = true;
 
-    const obs: Observable<ExecLog> = await this.execService.exec(this.mapUiToWs());
-
-    obs.subscribe(
+    this.execBean.currentExec = await this.execService.exec(this.mapComponentBeanToExecParam());
+    this.execBean.currentExec.logs.subscribe(
       (l) => this.logs.push(l),
       (e: Error) => {
         console.log(e);
@@ -67,12 +93,89 @@ export class ExecComponent implements OnInit {
           message: `Erreur : ${e.message}`
         });
       }, () => {
-        this.logs.push({
-          isInfo: true,
-          message: `Fin`
-        });
+        // Fin de l'execution
+        this.execBean.inExecution = false;
       });
 
+  }
+
+  public async onClickStop() {
+    this.execBean.currentExec.stopCb();
+  }
+
+  public onSubmitFile(): void {
+    this.execBean.inFilesEdition = false;
+  }
+
+  private mapExecInfosToComponentBean(execInfos: ExecInfos) {
+
+    // Ajout du fichier par defaut
+    const file: ExecComponentFileBean = new ExecComponentFileBean();
+    file.id = this.componentFileIdIt.next().value;
+    file.name = execInfos.bootFileTemplate.filePath;
+    file.content = execInfos.bootFileTemplate.code;
+
+    this.execBean.originalFiles.push(file);
+
+    //
+    this.execBean.imageInfos = execInfos.description;
+
+  }
+
+  private resetFilesFromOriginalFile() {
+    this.execBean.currentFiles.splice(0);
+    this.execBean.currentFiles.push(...this.execBean.originalFiles);
+  }
+
+  private mapComponentBeanToExecParam(): ExecParam {
+    const execParam = new ExecParam();
+    execParam.idImage = this.idImage;
+    execParam.files = this.execBean.currentFiles.map(f => {
+      return {
+        filePath: f.name,
+        code: f.content
+      };
+    });
+
+    return execParam;
+  }
+
+
+
+  private* componentFileIdIterator(): IterableIterator<number> {
+    let id = 0;
+    while (true) yield ++id;
+  }
+
+  private createNewFile(): ExecComponentFileBean {
+    const nextId = this.componentFileIdIt.next().value;
+    const newFile: ExecComponentFileBean = new ExecComponentFileBean();
+    newFile.id = nextId;
+    newFile.name = `Fichier${nextId}`;
+    newFile.content = '...';
+
+    return newFile;
+  }
+
+  private selectFile(file: ExecComponentFileBean) {
+    this.execBean.selectedFile = file;
+  }
+
+  private deleteFile(file: ExecComponentFileBean) {
+
+
+    const index = this.execBean.currentFiles.findIndex(f => f.id === file.id);
+    this.execBean.currentFiles.splice(index, 1);
+
+    if (this.execBean.selectedFile === file) {
+      const newIndex = Math.min(index, this.execBean.currentFiles.length - 1);
+      this.execBean.selectedFile = this.execBean.currentFiles[newIndex];
+    }
+
+  }
+
+  private findHtmlChild<T>(cssClass: string): T {
+    return this.elementRef.nativeElement.getElementsByClassName(cssClass)[0] as T;
   }
 
 }

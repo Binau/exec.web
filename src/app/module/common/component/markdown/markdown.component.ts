@@ -1,9 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 
 import * as myMarked from 'marked';
 
 import highlightjs from 'highlight.js';
-
 
 
 @Component({
@@ -25,7 +24,7 @@ export class MarkdownComponent implements OnInit {
 
   ngOnInit() {
     // Create reference instance
-    
+
 
     // Set options
     // `highlight` example uses `highlight.js`
@@ -33,7 +32,7 @@ export class MarkdownComponent implements OnInit {
       renderer: new myMarked.Renderer(),
       langPrefix: 'language-',
       gfm: true,
-      highlight: function(code, lang) {
+      highlight: function (code, lang) {
         if (typeof lang === 'undefined') {
           return highlightjs.highlightAuto(code).value;
         } else if (lang === 'nohighlight') {
