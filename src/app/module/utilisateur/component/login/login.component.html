@@ -1,3 +1,6 @@
 <p>
-  login works!
+  <input type="text" id="email" required [(ngModel)]="utilisateur.email" name="email" placeholder="email">
+  <input type="password" id="motDePasse" required [(ngModel)]="utilisateur.motDePasse" name="motDePasse" placeholder="motDePasse">
+
+  <button (click)="login()" md-raised-button color="primary">Post</button>
 </p>
