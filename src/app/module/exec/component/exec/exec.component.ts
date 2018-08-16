@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ExecService} from '../../service/exec.service';
-import {CodeMirrorApi} from '../../../common/component/code-mirror.api';
-import {ExecComponentBean} from './exec.component.bean';
+import {CodeMirrorApi} from '../../../common/component/code-mirror/code-mirror.api';
+import {ExecComponentBean, ExecComponentFileBean} from './exec.component.bean';
 import {ExecInfos, ExecLog, ExecParam, FileToInject} from '../../api/exec.api';
 
 
@@ -17,26 +17,20 @@ export class ExecComponent implements OnInit {
   @Input() idImage: string;
 
   public execBean: ExecComponentBean = new ExecComponentBean();
-  
+
   public logs: ExecLog[];
   public codeMirrorOpts: CodeMirrorApi = {};
 
   private componentFileIdIt = this.componentFileIdIterator();
+  private onClickWindowsListener = this.onClickWindows.bind(this);
 
   constructor(
+    private elementRef: ElementRef,
     private execService: ExecService) {
   }
 
   public async ngOnInit() {
     console.log('Affichage du composant ExecComponent', this.idImage);
-
-    this.initUi();
-  }
-
-  /**
-   * Initialisation des données ui
-   */
-  private async initUi(): Promise<void> {
 
     // Recuperation des infos via api http
     const execInfos: ExecInfos = await this.execService.getExecInfos(this.idImage);
@@ -45,16 +39,87 @@ export class ExecComponent implements OnInit {
     //
     this.mapExecInfosToComponentBean(execInfos);
     this.resetFilesFromOriginalFile();
+    this.selectFile(this.execBean.originalFiles[0]);
+
+    // On surveille les clics sur le tabs wrapper
+    const tabsWrapper: HTMLElement = this.findHtmlChild('tabs-wrapper');
+    tabsWrapper.addEventListener('click', (e) => (e as any).tabsWrapperFlag = true);
+  }
+
+  public onClickEdit(): void {
+    this.execBean.inFilesEdition = true;
+    window.addEventListener('click', this.onClickWindowsListener);
+  }
+
+  private onClickWindows(e): void {
+    if (!(e as any).tabsWrapperFlag) {
+      this.execBean.inFilesEdition = false;
+      window.removeEventListener('click', this.onClickWindowsListener);
+    }
+  }
+
+  public onClickAdd(): void {
+    const newFile: ExecComponentFileBean = this.createNewFile();
+    this.execBean.currentFiles.push(newFile);
+    this.selectFile(newFile);
+
+    // Selection du input ajouté pour simplifier le nommage
+    setTimeout(() => {
+      const input: HTMLInputElement = this.findHtmlChild(newFile.inputTagName);
+      input.select();
+    });
+  }
+
+  public onClickFile(file: ExecComponentFileBean): void {
+    this.selectFile(file);
+  }
+
+  public onClickDelete(file: ExecComponentFileBean): void {
+    this.deleteFile(file);
+  }
+
+  public async onClickExec() {
+
+    this.logs = [];
+    this.execBean.inExecution = true;
+
+    this.execBean.currentExec = await this.execService.exec(this.mapComponentBeanToExecParam());
+    this.execBean.currentExec.logs.subscribe(
+      (l) => this.logs.push(l),
+      (e: Error) => {
+        console.log(e);
+        this.logs.push({
+          isError: true,
+          message: `Erreur : ${e.message}`
+        });
+      }, () => {
+        // Fin de l'execution
+        this.execBean.inExecution = false;
+      });
 
   }
 
+  public async onClickStop() {
+    this.execBean.currentExec.stopCb();
+  }
+
+  public onSubmitFile(): void {
+    this.execBean.inFilesEdition = false;
+  }
+
   private mapExecInfosToComponentBean(execInfos: ExecInfos) {
-    this.execBean.originalFiles.push({
-      id: this.componentFileIdIt.next().value,
-      name: execInfos.bootFileTemplate.filePath,
-      content: execInfos.bootFileTemplate.code
-    });
-    this.execBean.selectedFile = this.execBean.originalFiles[0];
+
+    // Ajout du fichier par defaut
+    const file: ExecComponentFileBean = new ExecComponentFileBean();
+    file.id = this.componentFileIdIt.next().value;
+    file.name = execInfos.bootFileTemplate.filePath;
+    file.content = execInfos.bootFileTemplate.code;
+
+    this.execBean.originalFiles.push(file);
+
+    //
+    this.execBean.imageInfos = execInfos.description;
+
   }
 
   private resetFilesFromOriginalFile() {
@@ -76,27 +141,41 @@ export class ExecComponent implements OnInit {
   }
 
 
-  public async onClickExec() {
-
-    this.logs = [];
-
-    const obs: Observable<ExecLog> = await this.execService.exec(this.mapComponentBeanToExecParam());
-
-    obs.subscribe(
-      (l) => this.logs.push(l),
-      (e: Error) => {
-        console.log(e);
-        this.logs.push({
-          isError: true,
-          message: `Erreur : ${e.message}`
-        });
-      }, () => {
-      });
-
-  }
 
   private* componentFileIdIterator(): IterableIterator<number> {
     let id = 0;
-    while (true) yield id++;
+    while (true) yield ++id;
   }
+
+  private createNewFile(): ExecComponentFileBean {
+    const nextId = this.componentFileIdIt.next().value;
+    const newFile: ExecComponentFileBean = new ExecComponentFileBean();
+    newFile.id = nextId;
+    newFile.name = `Fichier${nextId}`;
+    newFile.content = '...';
+
+    return newFile;
+  }
+
+  private selectFile(file: ExecComponentFileBean) {
+    this.execBean.selectedFile = file;
+  }
+
+  private deleteFile(file: ExecComponentFileBean) {
+
+
+    const index = this.execBean.currentFiles.findIndex(f => f.id === file.id);
+    this.execBean.currentFiles.splice(index, 1);
+
+    if (this.execBean.selectedFile === file) {
+      const newIndex = Math.min(index, this.execBean.currentFiles.length - 1);
+      this.execBean.selectedFile = this.execBean.currentFiles[newIndex];
+    }
+
+  }
+
+  private findHtmlChild<T>(cssClass: string): T {
+    return this.elementRef.nativeElement.getElementsByClassName(cssClass)[0] as T;
+  }
+
 }

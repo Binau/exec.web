@@ -1,22 +1,30 @@
-.wrapper {
-  display: block;
-  border: 1px rgba(90%,90%,90%,1) solid;
 
+:root {
+  /*--theme-color-back : rgba(90%, 90%, 95%, 0.4);*/
+}
+
+
+.wrapper {
+
+  --theme-color-back : rgba(95%, 95%, 95%, 1);
+  --theme-color-active : rgba(95%, 93%, 87%, 1);
+  --theme-color-highlight : rgba(95%, 60%, 0%, 0.5);
+  --theme-padding : 10px;
+
+
+  display: block;
+
+  background-color: var(--theme-color-back);
+  padding: var(--theme-padding);
 }
 
 /* HEADER */
 .header {
   position: relative;
   height: 30px;
-
-  background-color: rgba(90%,90%,95%,0.7);
-  cursor: pointer;
-}
-.header:hover {
-  background-color: rgba(90%,90%,95%,0.9);
 }
 
-.header-title{
+.header-title {
 
 }
 
@@ -25,79 +33,252 @@
   position: absolute;
 
   right: 0;
-  top: 5px;
+  top: 0;
 
   height: 20px;
   width: 20px;
   vertical-align: middle;
 }
 
-.header-infosIcon{
-  height: 100%;
-  width: 100%;
-}
-
 /* TABS */
-.tabs-wrapper{
+.tabs-wrapper {
   height: 30px;
 }
 
-.tabs {
+.tabs-opts {
+  display: inline-block;
+
+  height : 100%;
+  padding: 4px 4px;
+  vertical-align: middle;
+}
+
+.tabs-editIcon {
+  padding:  0 4px;
   height: 100%;
-  background-color: rgba(90%,90%,95%,0.4);
+  width: 28px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tabs-editIcon:hover {
+  fill: rgba(100%, 60%, 0%, 0.8);
+  background-color: rgba(0%, 0%, 0%, 0.05);
+}
+
+.tabs-addIcon {
+  padding:  0 4px;
+  height: 100%;
+  width: 28px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tabs-addIcon:hover {
+  fill: rgba(100%, 60%, 0%, 0.8);
+  background-color: rgba(0%, 0%, 0%, 0.05);
+}
+
+.tabs-backIcon {
+  padding:  0 4px;
+  height: 100%;
+  width: 28px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tabs-backIcon:hover {
+  fill: rgba(100%, 60%, 0%, 0.8);
+  background-color: rgba(0%, 0%, 0%, 0.05);
+}
+
+.tabs {
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
 }
 
 .tab {
   position: relative;
   display: inline-block;
 
-  height: 100%;
+  height: 95%;
   line-height: 30px;
-  padding: 0 30px 0 20px;
-  margin: 0 1px;
+  margin: 0 4px 0 0;
+  padding: 0 5px;
 
   text-align: center;
-  border: 1px solid rgba(100%,100%,100%,0.2);
+  vertical-align: bottom;
 
-  color: rgba(0,0,0,1);
+  background-color: rgba(95%, 90%, 90%, 0.5);
+  color: rgba(0, 0, 0, 0.5);
+
+  cursor: pointer;
 }
 
+.tab:hover {
+  background-color: rgba(95%, 90%, 90%, 1);
+}
 
 .tab.active {
-  background-color: rgba(100%,100%,100%,0.9);
-  border-bottom: 1px solid rgba(100%,100%,100%,0.9);
+
+  transform: translateY(1px);
+
+  height: 100%;
+
+  color: rgba(0, 0, 0, 1);
+  background-color: var(--theme-color-active);
+
+  border-top: 1px solid rgba(100%, 60%, 0%, 0.5);
+  border-right: 1px solid rgba(100%, 60%, 0%, 0.5);
+  /*border-bottom: 1px solid rgba(100%, 60%, 0%, 0.5);*/
+  border-left: 1px solid rgba(100%, 60%, 0%, 0.5);
+
+  font-weight: bold;
+  cursor: default;
+
+
 }
-.tab.inactive {
-  background-color: rgba(95%,90%,90%,0.9);
+
+.tab-delIcon {
+  vertical-align: text-bottom;
+
+  margin: 0 0 0 5px;
+  padding: 2px;
+  height: 80%;
+  width: 20px;
   cursor: pointer;
-  color: rgba(0,0,0,0.5);
+
+  fill: rgba(100%, 0%, 0%, 0.8);
+
 }
-.tab.inactive:hover {
-  background-color: rgba(95%,90%,90%,0.5);
+
+.tab-delIcon:hover {
+  fill: rgba(0%, 0%, 0%, 0.8);
+  background-color: rgba(100%, 0%, 0%, 0.8);
 }
 
-.tabs-editIcon {
-  position: absolute;
-
-  right: 2px;
-  top : 8px;
-
-  height: 16px;
-  width: 16px;
+.tab-title {
   vertical-align: middle;
+  padding: 0 15px;
+}
+
+.tab-editTitleWrapper {
+  display: inline;
+}
+
+.tab-editTitle {
+  width: 100px;
+  height: 100%;
+  vertical-align: top;
 }
 
 /* EDITOR */
-.editor {
-  background-color: rgba(100%,100%,100%,0.9);
+.editor-wrapper {
+  /* remove 3px for overflow bug */
+  padding: 0 0 calc(var(--theme-padding) - 3px) 0;
 }
 
-.log{
-  padding: 2px;
+.editor {
+
+  display: inline-block;
+  width: 100%;
+  height : 150px;
+  padding: var(--theme-padding);
+
+  overflow-y: auto;
+  resize: vertical;
+
+  background-color: var(--theme-color-active);
+
+  border-top : 1px solid rgba(100%, 60%, 0%, 0.5);
+  border-right : 1px solid rgba(100%, 60%, 0%, 0.5);
+  border-bottom : 1px solid rgba(100%, 60%, 0%, 0.5);
+  border-left : 1px solid rgba(100%, 60%, 0%, 0.5);
 }
-.log.error{
+
+/* FOOTER */
+.footer {
+}
+
+.footer-btns {
+  display: inline-block;
+  width: 15%;
+  vertical-align: top;
+
+  padding: 0 10px 0 0;
+}
+
+.footer-btnStart {
+  width: 100%;
+  height: 30px;
+
+  cursor: pointer;
+}
+.footer-btnStartLabel {
+  display: inline-block;
+  width: 60px;
+  vertical-align: middle;
+}
+.footer-btnStartIco {
+  height: 20px;
+  width: 20px;
+  margin: 0 0 0 20px;
+
+  vertical-align: middle;
+
+  fill: rgba(0%, 100%, 10%, 1);
+}
+
+.footer-btnStop {
+  width: 100%;
+  height: 30px;
+
+  cursor: pointer;
+}
+.footer-btnStopLabel {
+  display: inline-block;
+  width: 60px;
+  vertical-align: middle;
+}
+.footer-btnStopIco {
+  height: 20px;
+  width: 20px;
+  margin: 0 0 0 20px;
+
+  vertical-align: middle;
+
+  fill: rgba(100%, 0%, 10%, 1);
+}
+
+.console-wrapper {
+  display: inline-block;
+  width: 85%;
+  height: 150px;
+
+  overflow: auto;
+  resize: vertical;
+
+  padding: 10px;
+  background-color: white;
+
+}
+.console {
+
+  width: 100%;
+  height: 100%;
+
+  overflow: auto;
+}
+
+
+.log {
+  padding: 0 5px;
+}
+
+.log.error {
   background-color: red;
 }
-.log.info{
-  background-color: lightgrey;
+
+.log.info {
 }

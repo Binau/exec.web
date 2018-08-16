@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CodeMirrorComponent } from './code-mirror.component';
+import { ExecSvgComponent } from './exec-svg.component';
 
-describe('CodeMirrorComponent', () => {
-  let component: CodeMirrorComponent;
-  let fixture: ComponentFixture<CodeMirrorComponent>;
+describe('ExecSvgComponent', () => {
+  let component: ExecSvgComponent;
+  let fixture: ComponentFixture<ExecSvgComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CodeMirrorComponent ]
+      declarations: [ ExecSvgComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CodeMirrorComponent);
+    fixture = TestBed.createComponent(ExecSvgComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

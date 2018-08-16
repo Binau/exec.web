@@ -1,47 +1,104 @@
+<app-exec-svg></app-exec-svg>
+
 <div class='wrapper'>
 
   <header class='header'>
     <span class='header-title'></span>
-    <span class='header-infos' [title]='idImage'>
-    <svg class='header-infosIcon'>
-      <image x="0" y="0" width="100%" height="100%"
-             xlink:href="assets/imgs/exec/question.svg"></image>
+    <svg class='header-infos'>
+      <title>{{execBean.imageInfos}}</title>
+      <use xlink:href="#Question"></use>
     </svg>
-  </span>
 
   </header>
 
   <nav class='tabs-wrapper'>
     <ol class='tabs'>
-      <li *ngFor='let file of execBean.currentFiles' class='tab inactive'>
-        {{file.name}}
-        <svg class='tabs-editIcon' title='Modifier le fichier'>
-          <image x="0" y="0" width="100%" height="100%"
-                 xlink:href="assets/imgs/exec/param.svg"></image>
+      <li *ngFor='let file of execBean.currentFiles'
+          (click)='onClickFile(file)'
+          class='tab' [ngClass]='{
+            "active":execBean.selectedFile===file
+          }'
+      >
+        <span *ngIf='!execBean.inFilesEdition'
+              class='tab-title'>
+          {{file.name}}
+        </span>
+        <form class='tab-editTitleWrapper' (submit)='onSubmitFile()'>
+          <input title='Nom du fichier'
+            name='fileName'
+            class='tab-editTitle {{file.inputTagName}}' *ngIf='execBean.inFilesEdition'
+            type='text' [(ngModel)]='file.name'/>
+        </form>
+
+        <svg *ngIf='execBean.inFilesEdition && execBean.selectedFile===file'
+             (click)='onClickDelete(file)'
+             class='tab-delIcon'>
+          <title>Supprimer le fichier</title>
+          <use xlink:href="#Delete"></use>
         </svg>
       </li>
-      <!--li class='tab active'>F2</li>
-      <li class='tab inactive'>F3</li-->
     </ol>
+    <span class='tabs-opts'>
+
+        <svg *ngIf='!execBean.inFilesEdition'
+             (click)='onClickEdit()'
+             class='tabs-editIcon'>
+            <title>Modification des fichiers</title>
+            <use xlink:href="#Settings"></use>
+        </svg>
+        <svg *ngIf='execBean.inFilesEdition'
+             (click)='onClickAdd()'
+             class='tabs-addIcon'>
+            <title>Ajouter un fichier</title>
+            <use xlink:href="#Add"></use>
+        </svg>
+
+    </span>
+
   </nav>
 
-  <div *ngIf='!!execBean.selectedFile'
-       class='editor'>
+  <div class='editor-wrapper'>
+    <div *ngFor='let file of execBean.currentFiles'> <span class='editor' *ngIf='execBean.selectedFile===file'>
+      <app-code-mirror
+        [(value)]='execBean.selectedFile.content' [options]='codeMirrorOpts'></app-code-mirror>
+      </span></div>
+  </div>
 
-    <app-code-mirror
-      [(value)]='execBean.selectedFile.content' [options]='codeMirrorOpts'></app-code-mirror>
+  <div class='footer'>
+
+    <div class='footer-btns'>
+      <button *ngIf='!execBean.inExecution'
+              class='footer-btnStart'
+              (click)='onClickExec()'>
+        <span class='footer-btnStartLabel'>Execution</span>
+        <svg class='footer-btnStartIco'>
+          <title>Execution</title>
+          <use xlink:href="#Play"></use>
+        </svg>
+      </button>
+      <button *ngIf='execBean.inExecution'
+              class='footer-btnStop'
+              (click)='onClickStop()'>
+        <span class='footer-btnStopLabel'>Annuler</span>
+        <svg class='footer-btnStopIco'>
+          <title>Annuler</title>
+          <use xlink:href="#Stop"></use>
+        </svg>
+      </button>
+    </div>
+    <div class='console-wrapper'>
+      <div class='console'>
+      <pre *ngFor='let log of logs' class='log' [ngClass]='{
+        "error":log.isError,
+        "info":log.isInfo
+      }'>{{log.message}}</pre>
+      </div>
+    </div>
 
   </div>
 
-  <button (click)='onClickExec()'>Run</button>
-
-  <details open>
-    <summary>Console</summary>
-    <pre *ngFor='let log of logs' class='log' [ngClass]='{
-    "error":log.isError,
-    "info":log.isInfo
-    }'>{{log.message}}</pre>
-  </details>
-
 
 </div>
+
+
+

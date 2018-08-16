@@ -6,9 +6,6 @@ export class WebsocketClient {
   public observable?: Observable<string>;
   public observer?: Observer<any>;
 
-  public send(data: string) {
-    this.observer.next(data);
-  }
 }
 
 @Injectable({

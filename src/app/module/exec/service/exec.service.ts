@@ -5,6 +5,11 @@ import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExecInfos, ExecLog, ExecParam} from '../api/exec.api';
 
+export class ExecInstance {
+  public logs: Observable<ExecLog>;
+  public stopCb: () => void;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +26,7 @@ export class ExecService {
     return this.http.get<ExecInfos>(`${ExecService.EXEC_URL}/${imageId}`).toPromise();
   }
 
-  public async exec(param: ExecParam): Promise<Observable<ExecLog>> {
+  public async exec(param: ExecParam): Promise<ExecInstance> {
     let client: WebsocketClient;
 
     // Connexion au ws
@@ -33,10 +38,15 @@ export class ExecService {
     }
 
     // Envoi la requete d'execution
-    client.send(JSON.stringify(param));
+    client.observer.next(JSON.stringify(param));
 
     // Mapping de chaque resultats
-    return client.observable.pipe(map<string, ExecLog>(m => JSON.parse(m)));
+    return {
+      logs: client.observable.pipe(map<string, ExecLog>(m => JSON.parse(m))),
+      stopCb: () => {
+        client.observer.complete();
+      }
+    };
 
   }
 
