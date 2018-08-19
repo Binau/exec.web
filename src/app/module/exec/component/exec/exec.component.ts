@@ -85,13 +85,13 @@ export class ExecComponent implements OnInit {
 
     this.execBean.currentExec = await this.execService.exec(this.mapComponentBeanToExecParam());
     this.execBean.currentExec.logs.subscribe(
-      (l) => this.logs.push(l),
+      (l) => {
+
+        if ((l as any).wsError) this.displayError(l.message);
+        else this.logs.push(l);
+      },
       (e: Error) => {
-        console.log(e);
-        this.logs.push({
-          isError: true,
-          message: `Erreur : ${e.message}`
-        });
+        this.displayError(e.message);
       }, () => {
         // Fin de l'execution
         this.execBean.inExecution = false;
@@ -111,15 +111,15 @@ export class ExecComponent implements OnInit {
 
     // Ajout du fichier par defaut
     const file: ExecComponentFileBean = new ExecComponentFileBean();
+
     file.id = this.componentFileIdIt.next().value;
     file.name = execInfos.bootFileTemplate.filePath;
     file.content = execInfos.bootFileTemplate.code;
-
     this.execBean.originalFiles.push(file);
 
     //
-    this.execBean.imageInfos = execInfos.description;
-
+    this.execBean.execInfos = execInfos;
+    this.execBean.description = execInfos.description;
   }
 
   private resetFilesFromOriginalFile() {
@@ -141,7 +141,6 @@ export class ExecComponent implements OnInit {
   }
 
 
-
   private* componentFileIdIterator(): IterableIterator<number> {
     let id = 0;
     while (true) yield ++id;
@@ -151,8 +150,16 @@ export class ExecComponent implements OnInit {
     const nextId = this.componentFileIdIt.next().value;
     const newFile: ExecComponentFileBean = new ExecComponentFileBean();
     newFile.id = nextId;
-    newFile.name = `Fichier${nextId}`;
-    newFile.content = '...';
+
+    const fileIndexTag = '#FILE_INDEX#';
+    const fileNameTag = '#FILE_NAME#';
+
+    newFile.name = this.execBean.execInfos.newFileTemplate.filePath.replace(fileIndexTag, '' + nextId);
+    newFile.content = this.execBean.execInfos.newFileTemplate.code
+      .replace(
+        new RegExp(fileIndexTag, 'g'), '' + nextId)
+      .replace(
+        new RegExp(fileNameTag, 'g'), newFile.name);
 
     return newFile;
   }
@@ -163,7 +170,6 @@ export class ExecComponent implements OnInit {
 
   private deleteFile(file: ExecComponentFileBean) {
 
-
     const index = this.execBean.currentFiles.findIndex(f => f.id === file.id);
     this.execBean.currentFiles.splice(index, 1);
 
@@ -171,11 +177,18 @@ export class ExecComponent implements OnInit {
       const newIndex = Math.min(index, this.execBean.currentFiles.length - 1);
       this.execBean.selectedFile = this.execBean.currentFiles[newIndex];
     }
-
   }
 
   private findHtmlChild<T>(cssClass: string): T {
     return this.elementRef.nativeElement.getElementsByClassName(cssClass)[0] as T;
+  }
+
+  private displayError(message: string) {
+    console.log(message);
+    this.logs.push({
+      isError: true,
+      message: `Erreur : ${message}`
+    });
   }
 
 }

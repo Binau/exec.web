@@ -6,9 +6,9 @@ export class FileToInject {
 export class ExecInfos {
   description: string;
   langage: string;
-  bootFileTemplate: FileToInject; // TODO Files ?
+  bootFileTemplate: FileToInject;
+  newFileTemplate: FileToInject;
 }
-
 
 export class ExecParam {
   // Id de l'image

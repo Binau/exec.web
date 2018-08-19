@@ -31,7 +31,7 @@ export class WebsocketService {
 
       },
       error: (err: any) => {
-        // Pas de traitement particulier
+        console.error('ERROR : ', err);
       },
       complete: () => ws.close()
     };

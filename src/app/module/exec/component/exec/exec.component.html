@@ -5,7 +5,7 @@
   <header class='header'>
     <span class='header-title'></span>
     <svg class='header-infos'>
-      <title>{{execBean.imageInfos}}</title>
+      <title>{{execBean.description}}</title>
       <use xlink:href="#Question"></use>
     </svg>
 
@@ -25,9 +25,9 @@
         </span>
         <form class='tab-editTitleWrapper' (submit)='onSubmitFile()'>
           <input title='Nom du fichier'
-            name='fileName'
-            class='tab-editTitle {{file.inputTagName}}' *ngIf='execBean.inFilesEdition'
-            type='text' [(ngModel)]='file.name'/>
+                 name='fileName'
+                 class='tab-editTitle {{file.inputTagName}}' *ngIf='execBean.inFilesEdition'
+                 type='text' [(ngModel)]='file.name'/>
         </form>
 
         <svg *ngIf='execBean.inFilesEdition && execBean.selectedFile===file'
@@ -57,11 +57,14 @@
 
   </nav>
 
-  <div class='editor-wrapper'>
-    <div *ngFor='let file of execBean.currentFiles'> <span class='editor' *ngIf='execBean.selectedFile===file'>
+  <div class='editors-wrapper'>
+    <div class='editor-wrapper' *ngFor='let file of execBean.currentFiles'
+          [ngClass]='{ "active": execBean.selectedFile===file}'>
+      <span class='editor' *ngIf='execBean.selectedFile===file'>
       <app-code-mirror
         [(value)]='execBean.selectedFile.content' [options]='codeMirrorOpts'></app-code-mirror>
-      </span></div>
+      </span>
+    </div>
   </div>
 
   <div class='footer'>

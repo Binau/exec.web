@@ -1,5 +1,5 @@
 import {Observable} from 'rxjs';
-import {ExecLog} from '../../api/exec.api';
+import {ExecInfos, ExecLog} from '../../api/exec.api';
 import {ExecInstance} from '../../service/exec.service';
 
 export class ExecComponentFileBean {
@@ -17,7 +17,8 @@ export class ExecComponentFileBean {
 
 export class ExecComponentBean {
 
-  public imageInfos: string;
+  public execInfos: ExecInfos = {description: '', bootFileTemplate: null, newFileTemplate: null, langage: null};
+  public description: string;
 
   public originalFiles: ExecComponentFileBean[] = [];
   public currentFiles: ExecComponentFileBean[] = [];
