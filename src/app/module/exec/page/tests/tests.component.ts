@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TestsService} from '../../service/tests.service';
 import {TestInfos} from '../../api/test.http.api';
+import {ExecComponentParam} from '../../component/exec/exec.component.param';
 
 @Component({
   selector: 'app-tests',
@@ -9,7 +10,17 @@ import {TestInfos} from '../../api/test.http.api';
 })
 export class TestsComponent implements OnInit {
 
-  private tests: TestInfos[];
+  public tests: TestInfos[];
+  public paramJs: ExecComponentParam = {
+    title: 'Titre test',
+    idImage: 'simple-js'
+  };
+  public paramJava: ExecComponentParam = {
+    idImage: 'simple-java'
+  };
+  public paramBash: ExecComponentParam = {
+    idImage: 'simple-bash'
+  };
 
   constructor(private testsService: TestsService) {
   }

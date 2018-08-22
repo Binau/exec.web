@@ -2,8 +2,12 @@
 
 <div class='wrapper'>
 
-  <header class='header'>
-    <span class='header-title'></span>
+  <header class='header' *ngIf='execBean.displayHeader'>
+    <svg class='header-ico'>
+      <title>{{execBean.title}}</title>
+      <use xlink:href="#ExecIcon"></use>
+    </svg>
+    <span class='header-title'>{{execBean.title}}</span>
     <svg class='header-infos'>
       <title>{{execBean.description}}</title>
       <use xlink:href="#Question"></use>
@@ -20,22 +24,24 @@
           }'
       >
         <span *ngIf='!execBean.inFilesEdition'
-              class='tab-title'>
+              class='tab-title' [title]='file.name'>
           {{file.name}}
         </span>
-        <form class='tab-editTitleWrapper' (submit)='onSubmitFile()'>
+
+        <form class='tab-editWrapper' (submit)='onSubmitFile()'>
           <input title='Nom du fichier'
                  name='fileName'
                  class='tab-editTitle {{file.inputTagName}}' *ngIf='execBean.inFilesEdition'
                  type='text' [(ngModel)]='file.name'/>
+
+          <svg *ngIf='execBean.inFilesEdition '
+               (click)='onClickDelete(file)'
+               class='tab-delIcon'>
+            <title>Supprimer le fichier</title>
+            <use xlink:href="#Delete"></use>
+          </svg>
         </form>
 
-        <svg *ngIf='execBean.inFilesEdition && execBean.selectedFile===file'
-             (click)='onClickDelete(file)'
-             class='tab-delIcon'>
-          <title>Supprimer le fichier</title>
-          <use xlink:href="#Delete"></use>
-        </svg>
       </li>
     </ol>
     <span class='tabs-opts'>
@@ -45,6 +51,12 @@
              class='tabs-editIcon'>
             <title>Modification des fichiers</title>
             <use xlink:href="#Settings"></use>
+        </svg>
+        <svg *ngIf='execBean.inFilesEdition'
+             (click)='onClickReset()'
+             class='tabs-resetIcon'>
+            <title>Reset</title>
+            <use xlink:href="#Reset"></use>
         </svg>
         <svg *ngIf='execBean.inFilesEdition'
              (click)='onClickAdd()'
@@ -59,10 +71,11 @@
 
   <div class='editors-wrapper'>
     <div class='editor-wrapper' *ngFor='let file of execBean.currentFiles'
-          [ngClass]='{ "active": execBean.selectedFile===file}'>
+         [ngClass]='{ "active": execBean.selectedFile===file}'>
       <span class='editor' *ngIf='execBean.selectedFile===file'>
       <app-code-mirror
-        [(value)]='execBean.selectedFile.content' [options]='codeMirrorOpts'></app-code-mirror>
+        [(value)]='execBean.selectedFile.content'
+        [options]='execBean.selectedFile.codeMirrorOpts'></app-code-mirror>
       </span>
     </div>
   </div>

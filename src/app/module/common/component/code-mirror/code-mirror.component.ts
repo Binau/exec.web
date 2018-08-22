@@ -5,7 +5,7 @@ import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/shell/shell';
 //
-import {CodeMirrorApi} from './code-mirror.api';
+import {CodeMirrorParam, CodeMirrorLanguage} from './code-mirror.param';
 
 @Component({
   selector: 'app-code-mirror',
@@ -20,7 +20,7 @@ export class CodeMirrorComponent implements OnInit {
   public valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   @Input()
-  public options: CodeMirrorApi;
+  public options: CodeMirrorParam;
 
 
   constructor(
@@ -31,7 +31,8 @@ export class CodeMirrorComponent implements OnInit {
 
   ngOnInit() {
 
-    if (!this.options) this.options = {};
+    if (!this.options) this.options = new CodeMirrorParam();
+    if (!this.options.language) this.options.language = CodeMirrorLanguage.NONE;
 
     // Creation de l'element graphique editor
     const editor = CodeMirror((elt) => {
@@ -39,33 +40,18 @@ export class CodeMirrorComponent implements OnInit {
     }, {
       lineNumbers: true,
       value: this.value,
-      mode: this.getCodeMirrorMode(this.options),
+      mode: this.options.language,
 
+    });
+
+    // Changement d'options
+    this.options.languageChanged.subscribe((newLanguage) => {
+      editor.setOption('mode', newLanguage);
     });
 
     // Au defocus, Repercution de la valeur sur le parametre entrant
     editor.on('blur', () => this.valueChange.emit(editor.getValue()));
-
   }
 
-  private getCodeMirrorMode(options: CodeMirrorApi): string {
-    let mode;
-
-    // par defaut;
-    if (!options.langage) return 'javascript';
-
-    switch (options.langage) {
-      case 'java' :
-        mode = 'text/x-java';
-        break;
-      case 'shell' :
-        mode = 'shell';
-        break;
-      default :
-        mode = 'javascript';
-    }
-
-    return mode;
-  }
 
 }

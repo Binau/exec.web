@@ -7,7 +7,7 @@ import {AppRouteSubmodule} from './app.route.submodule';
 
 import { BarreNavigationComponent } from './component/barre-navigation/barre-navigation.component';
 
-import {AccueilComponent} from './component/accueil/accueil.component';
+import {AccueilComponent} from './page/accueil/accueil.component';
 
 import {CommonModule} from './module/common/common.module';
 import {ExecModule} from './module/exec/exec.module';

@@ -1,9 +1,9 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
 import {ExecService} from '../../service/exec.service';
-import {CodeMirrorApi} from '../../../common/component/code-mirror/code-mirror.api';
 import {ExecComponentBean, ExecComponentFileBean} from './exec.component.bean';
-import {ExecInfos, ExecLog, ExecParam, FileToInject} from '../../api/exec.api';
+import {ExecInfos, ExecLog, ExecParam} from '../../api/exec.api';
+import {CodeMirrorLanguage} from '../../../common/component/code-mirror/code-mirror.param';
+import {ExecComponentParam} from './exec.component.param';
 
 
 @Component({
@@ -13,13 +13,11 @@ import {ExecInfos, ExecLog, ExecParam, FileToInject} from '../../api/exec.api';
 })
 export class ExecComponent implements OnInit {
 
-  // Id de l'image vers laquelle sera testé le code
-  @Input() idImage: string;
+  @Input() params: ExecComponentParam;
 
   public execBean: ExecComponentBean = new ExecComponentBean();
 
   public logs: ExecLog[];
-  public codeMirrorOpts: CodeMirrorApi = {};
 
   private componentFileIdIt = this.componentFileIdIterator();
   private onClickWindowsListener = this.onClickWindows.bind(this);
@@ -30,16 +28,21 @@ export class ExecComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    console.log('Affichage du composant ExecComponent', this.idImage);
+    if (!this.params || !this.params.idImage) {
+      console.log('ExecComponent : parametre idImage obligatoire', this.params);
+      return;
+    } else {
+      console.log('Affichage du composant ExecComponent', this.params);
+    }
+
 
     // Recuperation des infos via api http
-    const execInfos: ExecInfos = await this.execService.getExecInfos(this.idImage);
-    this.codeMirrorOpts.langage = execInfos.langage;
+    const execInfos: ExecInfos = await this.execService.getExecInfos(this.params.idImage);
 
     //
     this.mapExecInfosToComponentBean(execInfos);
+    this.execBean.title = this.params.title ? this.params.title : '';
     this.resetFilesFromOriginalFile();
-    this.selectFile(this.execBean.originalFiles[0]);
 
     // On surveille les clics sur le tabs wrapper
     const tabsWrapper: HTMLElement = this.findHtmlChild('tabs-wrapper');
@@ -86,7 +89,6 @@ export class ExecComponent implements OnInit {
     this.execBean.currentExec = await this.execService.exec(this.mapComponentBeanToExecParam());
     this.execBean.currentExec.logs.subscribe(
       (l) => {
-
         if ((l as any).wsError) this.displayError(l.message);
         else this.logs.push(l);
       },
@@ -107,10 +109,17 @@ export class ExecComponent implements OnInit {
     this.execBean.inFilesEdition = false;
   }
 
+  public onClickReset(): void {
+    this.resetFilesFromOriginalFile();
+  }
+
   private mapExecInfosToComponentBean(execInfos: ExecInfos) {
 
     // Ajout du fichier par defaut
     const file: ExecComponentFileBean = new ExecComponentFileBean();
+    file.changeNameEvent.subscribe(
+      this.resetCodeMirrorLanguage.bind(this, file)
+    );
 
     file.id = this.componentFileIdIt.next().value;
     file.name = execInfos.bootFileTemplate.filePath;
@@ -124,12 +133,19 @@ export class ExecComponent implements OnInit {
 
   private resetFilesFromOriginalFile() {
     this.execBean.currentFiles.splice(0);
-    this.execBean.currentFiles.push(...this.execBean.originalFiles);
+    this.execBean.currentFiles.push(...this.execBean.originalFiles.map(f => {
+      const cloned = f.clone();
+      cloned.changeNameEvent.subscribe(
+        this.resetCodeMirrorLanguage.bind(this, cloned)
+      );
+      return cloned;
+    }));
+    this.selectFile(this.execBean.currentFiles[0]);
   }
 
   private mapComponentBeanToExecParam(): ExecParam {
     const execParam = new ExecParam();
-    execParam.idImage = this.idImage;
+    execParam.idImage = this.params.idImage;
     execParam.files = this.execBean.currentFiles.map(f => {
       return {
         filePath: f.name,
@@ -149,6 +165,9 @@ export class ExecComponent implements OnInit {
   private createNewFile(): ExecComponentFileBean {
     const nextId = this.componentFileIdIt.next().value;
     const newFile: ExecComponentFileBean = new ExecComponentFileBean();
+    newFile.changeNameEvent.subscribe(
+      this.resetCodeMirrorLanguage.bind(this, newFile)
+    );
     newFile.id = nextId;
 
     const fileIndexTag = '#FILE_INDEX#';
@@ -160,7 +179,6 @@ export class ExecComponent implements OnInit {
         new RegExp(fileIndexTag, 'g'), '' + nextId)
       .replace(
         new RegExp(fileNameTag, 'g'), newFile.name);
-
     return newFile;
   }
 
@@ -191,4 +209,20 @@ export class ExecComponent implements OnInit {
     });
   }
 
+  private resetCodeMirrorLanguage(file: ExecComponentFileBean): void {
+    console.log('reset for ', file.fileNameExtention);
+    switch (file.fileNameExtention) {
+      case '.js':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.JAVASCRIPT;
+        break;
+      case '.java':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.JAVA;
+        break;
+      case '.sh':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.SHELL;
+        break;
+      default :
+        file.codeMirrorOpts.language = CodeMirrorLanguage.NONE;
+    }
+  }
 }
