@@ -46,7 +46,7 @@
     </ol>
     <span class='tabs-opts'>
 
-        <svg *ngIf='!execBean.inFilesEdition'
+        <svg *ngIf="execBean.displayEditFiles"
              (click)='onClickEdit()'
              class='tabs-editIcon'>
             <title>Modification des fichiers</title>
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <div class='footer'>
+  <div class='footer' *ngIf='execBean.displayExecution'>
 
     <div class='footer-btns'>
       <button *ngIf='!execBean.inExecution'

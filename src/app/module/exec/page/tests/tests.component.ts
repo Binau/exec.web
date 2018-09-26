@@ -16,6 +16,7 @@ export class TestsComponent implements OnInit {
     idImage: 'simple-js'
   };
   public paramJava: ExecComponentParam = {
+    title: 'Démo composant Java',
     idImage: 'simple-java'
   };
   public paramBash: ExecComponentParam = {

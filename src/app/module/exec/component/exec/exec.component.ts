@@ -28,20 +28,16 @@ export class ExecComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    if (!this.params || !this.params.idImage) {
-      console.log('ExecComponent : parametre idImage obligatoire', this.params);
-      return;
-    } else {
-      console.log('Affichage du composant ExecComponent', this.params);
-    }
-
+    console.log('Affichage du composant ExecComponent', this.params);
+    this.params = this.params || {};
+    this.execBean.params = this.params;
 
     // Recuperation des infos via api http
     const execInfos: ExecInfos = await this.execService.getExecInfos(this.params.idImage);
 
     //
     this.mapExecInfosToComponentBean(execInfos);
-    this.execBean.title = this.params.title ? this.params.title : '';
+
     this.resetFilesFromOriginalFile();
 
     // On surveille les clics sur le tabs wrapper
@@ -114,6 +110,10 @@ export class ExecComponent implements OnInit {
   }
 
   private mapExecInfosToComponentBean(execInfos: ExecInfos) {
+
+    if (!execInfos) {
+      return;
+    }
 
     // Ajout du fichier par defaut
     const file: ExecComponentFileBean = new ExecComponentFileBean();
@@ -210,7 +210,6 @@ export class ExecComponent implements OnInit {
   }
 
   private resetCodeMirrorLanguage(file: ExecComponentFileBean): void {
-    console.log('reset for ', file.fileNameExtention);
     switch (file.fileNameExtention) {
       case '.js':
         file.codeMirrorOpts.language = CodeMirrorLanguage.JAVASCRIPT;

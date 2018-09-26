@@ -2,8 +2,10 @@ import {ExecInfos} from '../../api/exec.api';
 import {ExecInstance} from '../../service/exec.service';
 import {CodeMirrorParam} from '../../../common/component/code-mirror/code-mirror.param';
 import {EventEmitter} from '@angular/core';
+import {ExecComponentParam} from './exec.component.param';
 
 export class ExecComponentFileBean {
+
   public id: number;
   public content: string;
   public codeMirrorOpts: CodeMirrorParam = new CodeMirrorParam();
@@ -49,7 +51,18 @@ export class ExecComponentFileBean {
 
 export class ExecComponentBean {
 
-  public title = '';
+  public params: ExecComponentParam;
+
+  public get title(): string {
+    return this.params.title ? this.params.title : '';
+  }
+
+  public get displayEditFiles(): boolean {
+    return !this.params.disableFileChange && !this.inFilesEdition;
+  }
+  public get displayExecution(): boolean {
+    return !this.params.disableExecution;
+  }
 
   public get displayHeader(): boolean {
     return this.title !== '';

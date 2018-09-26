@@ -1,6 +1,9 @@
-export class ExecComponentParam {
+export interface ExecComponentParam {
 
-  public idImage: string;
-  public title?: string;
+  idImage?: string;
+  title?: string;
+
+  disableFileChange?: boolean;
+  disableExecution?: boolean;
 
 }

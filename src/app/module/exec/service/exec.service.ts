@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {WebsocketClient, WebsocketService} from '../../common/service/websocket.service';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ExecInfos, ExecLog, ExecParam} from '../api/exec.api';
 
@@ -23,6 +23,9 @@ export class ExecService {
   }
 
   public async getExecInfos(imageId: string): Promise<ExecInfos> {
+
+    if (!imageId) return Promise.resolve(null);
+
     return this.http.get<ExecInfos>(`${ExecService.EXEC_URL}/${imageId}`).toPromise();
   }
 

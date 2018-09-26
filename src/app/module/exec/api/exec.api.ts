@@ -4,10 +4,10 @@ export class FileToInject {
 }
 
 export class ExecInfos {
-  description: string;
-  langage: string;
-  bootFileTemplate: FileToInject;
-  newFileTemplate: FileToInject;
+  description?: string;
+  langage?: string;
+  bootFileTemplate?: FileToInject;
+  newFileTemplate?: FileToInject;
 }
 
 export class ExecParam {
