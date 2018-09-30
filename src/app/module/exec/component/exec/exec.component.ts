@@ -32,10 +32,11 @@ export class ExecComponent implements OnInit {
     this.params = this.params || {};
     this.execBean.params = this.params;
 
-    // Recuperation des infos d'execution via api http
+    // Recuperation des infos d'execution lié au parametre idImage via api http
     const execInfos: ExecInfos = await this.execService.getExecInfos(this.params.idImage);
 
     // Création du bean à partir des infos d'execution
+    this.initFilesFromExecInfos(execInfos);
     this.mapExecInfosToComponentBean(execInfos);
 
     // Init des fichiers affichés à partir du context
@@ -110,7 +111,10 @@ export class ExecComponent implements OnInit {
     this.resetFilesFromOriginalFile();
   }
 
-  private mapExecInfosToComponentBean(execInfos: ExecInfos) {
+  /**
+   * Initialisation des fichiers depuis les exec infos
+   */
+  private initFilesFromExecInfos(execInfos: ExecInfos) {
 
     if (!execInfos) {
       return;
@@ -122,10 +126,18 @@ export class ExecComponent implements OnInit {
       this.resetCodeMirrorLanguage.bind(this, file)
     );
 
+    //
     file.id = this.componentFileIdIt.next().value;
     file.name = execInfos.bootFileTemplate.filePath;
     file.content = execInfos.bootFileTemplate.code;
     this.execBean.originalFiles.push(file);
+  }
+
+  private mapExecInfosToComponentBean(execInfos: ExecInfos) {
+
+    if (!execInfos) {
+      return;
+    }
 
     //
     this.execBean.execInfos = execInfos;
