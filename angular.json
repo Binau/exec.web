@@ -46,6 +46,14 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "stub": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.stub.ts"
+                }
+              ]
             }
           }
         },
@@ -57,6 +65,9 @@
           "configurations": {
             "production": {
               "browserTarget": "exec-web:build:production"
+            },
+            "stub": {
+              "browserTarget": "exec-web:build:stub"
             }
           }
         },

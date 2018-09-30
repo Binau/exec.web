@@ -60,12 +60,17 @@ export class ExecComponentBean {
   public get displayEditFiles(): boolean {
     return !this.params.disableFileChange && !this.inFilesEdition;
   }
+
   public get displayExecution(): boolean {
     return !this.params.disableExecution;
   }
 
   public get displayHeader(): boolean {
     return this.title !== '';
+  }
+
+  public get displayFilesName(): boolean {
+    return !this.params.hideFiles;
   }
 
   public execInfos: ExecInfos = {description: '', bootFileTemplate: null, newFileTemplate: null, langage: null};

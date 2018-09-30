@@ -16,6 +16,7 @@ export class ExecInstance {
 export class ExecService {
 
   private static EXEC_URL = 'rest/execs';
+  private static WS_EXEC_URL = '/ws/exec';
 
   constructor(
     private wsService: WebsocketService,
@@ -30,22 +31,22 @@ export class ExecService {
   }
 
   public async exec(param: ExecParam): Promise<ExecInstance> {
-    let client: WebsocketClient;
+    let client: WebsocketClient<ExecParam, ExecLog>;
 
     // Connexion au ws
     try {
-      client = await this.wsService.connect(`/ws/exec`);
+      client = await this.wsService.connect(ExecService.WS_EXEC_URL);
 
     } catch (e) {
       console.log(e);
     }
 
     // Envoi la requete d'execution
-    client.observer.next(JSON.stringify(param));
+    client.observer.next(param);
 
     // Mapping de chaque resultats
     return {
-      logs: client.observable.pipe(map<string, ExecLog>(m => JSON.parse(m))),
+      logs: client.observable,
       stopCb: () => {
         client.observer.complete();
       }

@@ -32,12 +32,13 @@ export class ExecComponent implements OnInit {
     this.params = this.params || {};
     this.execBean.params = this.params;
 
-    // Recuperation des infos via api http
+    // Recuperation des infos d'execution via api http
     const execInfos: ExecInfos = await this.execService.getExecInfos(this.params.idImage);
 
-    //
+    // Création du bean à partir des infos d'execution
     this.mapExecInfosToComponentBean(execInfos);
 
+    // Init des fichiers affichés à partir du context
     this.resetFilesFromOriginalFile();
 
     // On surveille les clics sur le tabs wrapper

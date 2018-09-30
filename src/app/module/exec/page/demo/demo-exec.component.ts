@@ -12,11 +12,8 @@ export class DemoExecComponent implements OnInit {
     '# Composant d\'execution\n' +
     'Le composant d\'éxecution permet de proposer du code et de l\'executer.\n' +
     'Exemple ci dessous avec un composant d\'execution java :\n' +
-    '***\n' +
-    '***\n' +
     '';
   private _displayTitle = true;
-
 
   public set allowFilesChange(val: boolean) {
     this.paramDemo1.disableFileChange = !val;
@@ -34,6 +31,14 @@ export class DemoExecComponent implements OnInit {
     return !this.paramDemo1.disableExecution;
   }
 
+  public set displayFiles(val: boolean) {
+    this.paramDemo1.hideFiles = !val;
+  }
+
+  public get displayFiles(): boolean {
+    return !this.paramDemo1.hideFiles;
+  }
+
   public set displayTitle(val: boolean) {
     this._displayTitle = val;
     this.paramDemo1.title = val ? 'Démo composant Java' : '';
@@ -42,7 +47,6 @@ export class DemoExecComponent implements OnInit {
   public get displayTitle(): boolean {
     return this._displayTitle;
   }
-
 
   public paramDemo1: ExecComponentParam = {
     title: 'Démo composant Java',

@@ -1,13 +1,15 @@
 <app-markdown [markdown]='text1'></app-markdown>
 
-<div>
+<div class='exec-bloc'>
   <h3>Parametrage</h3>
-  <p><input title='Titre' type='checkbox' [(ngModel)]='displayTitle'/> Afficher Titre</p>
-  <p><input title='fsd' type='checkbox' [(ngModel)]='allowFilesChange'/> Autoriser la modification des fichiers</p>
-  <p><input title='fsd' type='checkbox' [(ngModel)]='allowExec'/> Autoriser l'exécution</p>
+  <div class='exec-prms'>
+    <p class='exec-prm' ><input title='Titre' type='checkbox' [(ngModel)]='displayTitle'/> Afficher Titre</p>
+    <p class='exec-prm'><input title='Modification fichiers' type='checkbox' [(ngModel)]='allowFilesChange'/> Autoriser la modification des fichiers</p>
+    <p class='exec-prm'><input title='Execution' type='checkbox' [(ngModel)]='allowExec'/> Autoriser l'exécution</p>
+    <p class='exec-prm'><input title='Afficher fichiers' type='checkbox' [(ngModel)]='displayFiles'/> Afficher les fichiers </p>
+  </div>
+  <app-exec [params]="paramDemo1"></app-exec>
 </div>
-
-<app-exec class='exec' [params]="paramDemo1"></app-exec>
 
 <app-markdown markdown="
 # Titre 2

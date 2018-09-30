@@ -15,7 +15,8 @@
 
   </header>
 
-  <nav class='tabs-wrapper'>
+  <!-- Tabulation des fichiers + options de fichiers -->
+  <nav class='tabs-wrapper' *ngIf='execBean.displayFilesName'>
     <ol class='tabs'>
       <li *ngFor='let file of execBean.currentFiles'
           (click)='onClickFile(file)'
@@ -68,6 +69,9 @@
     </span>
 
   </nav>
+
+  <!-- Affichage d'une marge pour remplacer le nom des fichiers -->
+  <div class='tabs-hidden' *ngIf='!execBean.displayFilesName'></div>
 
   <div class='editors-wrapper'>
     <div class='editor-wrapper' *ngFor='let file of execBean.currentFiles'

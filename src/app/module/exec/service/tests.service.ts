@@ -28,7 +28,7 @@ export class TestsService {
   }
 
   public async runTest(param: TestParam): Promise<Observable<TestInfo>> {
-    let client: WebsocketClient;
+    let client: WebsocketClient<any, any>;
 
     // Connexion au ws
     try {
@@ -38,10 +38,10 @@ export class TestsService {
     }
 
     // Envoi la requete d'execution
-    client.observer.next(JSON.stringify(param));
+    client.observer.next(param);
 
     // Mapping de chaque resultats
-    return client.observable.pipe(map<string, TestInfo>(m => JSON.parse(m)));
+    return client.observable;
 
   }
 

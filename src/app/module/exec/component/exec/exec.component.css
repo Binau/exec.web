@@ -58,6 +58,10 @@
 }
 
 /* TABS */
+.tabs-hidden {
+  height: 10px;
+}
+
 .tabs-wrapper {
   display: grid;
 
