@@ -4,6 +4,9 @@ import {CodeMirrorParam} from '../../../common/component/code-mirror/code-mirror
 import {EventEmitter} from '@angular/core';
 import {ExecComponentParam} from './exec.component.param';
 
+/**
+ * Informations sur un fichier dans le composant d'execution
+ */
 export class ExecComponentFileBean {
 
   public id: number;
@@ -49,6 +52,9 @@ export class ExecComponentFileBean {
 
 }
 
+/**
+ * Informations sur le composant d'execution
+ */
 export class ExecComponentBean {
 
   public params: ExecComponentParam;
@@ -84,7 +90,6 @@ export class ExecComponentBean {
   public inExecution = false;
 
   public currentExec: ExecInstance;
-
 
 }
 
