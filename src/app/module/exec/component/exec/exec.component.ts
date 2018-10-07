@@ -1,9 +1,11 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {ExecService} from '../../service/exec.service';
-import {ExecComponentBean, ExecComponentFileBean} from './exec.component.bean';
-import {ExecInfos, ExecLog, ExecParam} from '../../api/exec.api';
+import {ExecComponentBean} from './bean/exec.component.bean';
+import {ExecInfos, ExecLog, ExecParam as SrvExecParam} from '../../api/exec.api';
 import {CodeMirrorLanguage} from '../../../common/component/code-mirror/code-mirror.param';
-import {ExecComponentParam} from './exec.component.param';
+import {ExecParam} from './param/exec.param';
+import {ExecComponentFileBean} from './bean/exec.component.file.bean';
+import {ExecFileParam} from './param/exec.file.param';
 
 
 @Component({
@@ -13,8 +15,15 @@ import {ExecComponentParam} from './exec.component.param';
 })
 export class ExecComponent implements OnInit {
 
-  @Input() params: ExecComponentParam;
+  /**
+   * Parametres entrants
+   */
+  @Input()
+  public params: ExecParam;
 
+  /**
+   * Informations pour le composant d'execution
+   */
   public execBean: ExecComponentBean = new ExecComponentBean();
 
   public logs: ExecLog[];
@@ -28,16 +37,16 @@ export class ExecComponent implements OnInit {
   }
 
   public async ngOnInit() {
-    console.log('Affichage du composant ExecComponent', this.params);
     this.params = this.params || {};
-    this.execBean.params = this.params;
+    console.log('Affichage du composant ExecComponent', this.params);
 
     // Recuperation des infos d'execution lié au parametre idImage via api http
-    const execInfos: ExecInfos = await this.execService.getExecInfos(this.params.idImage);
-
-    // Création du bean à partir des infos d'execution
-    this.initFilesFromExecInfos(execInfos);
-    this.mapExecInfosToComponentBean(execInfos);
+    let execInfos: ExecInfos;
+    if (this.params.idImage) {
+      execInfos = await this.execService.getExecInfos(this.params.idImage);
+    }
+    // Init du composant
+    this.initComponentBean(execInfos);
 
     // Init des fichiers affichés à partir du context
     this.resetFilesFromOriginalFile();
@@ -47,6 +56,9 @@ export class ExecComponent implements OnInit {
     tabsWrapper.addEventListener('click', (e) => (e as any).tabsWrapperFlag = true);
   }
 
+  /**
+   * Evenements
+   */
   public onClickEdit(): void {
     this.execBean.inFilesEdition = true;
     window.addEventListener('click', this.onClickWindowsListener);
@@ -103,7 +115,8 @@ export class ExecComponent implements OnInit {
     this.execBean.currentExec.stopCb();
   }
 
-  public onSubmitFile(): void {
+  public onSubmitFileName(file: ExecComponentFileBean): void {
+    this.resetCodeMirrorLanguage.bind(this, file);
     this.execBean.inFilesEdition = false;
   }
 
@@ -111,53 +124,14 @@ export class ExecComponent implements OnInit {
     this.resetFilesFromOriginalFile();
   }
 
-  /**
-   * Initialisation des fichiers depuis les exec infos
-   */
-  private initFilesFromExecInfos(execInfos: ExecInfos) {
-
-    if (!execInfos) {
-      return;
-    }
-
-    // Ajout du fichier par defaut
-    const file: ExecComponentFileBean = new ExecComponentFileBean();
-    file.changeNameEvent.subscribe(
-      this.resetCodeMirrorLanguage.bind(this, file)
-    );
-
-    //
-    file.id = this.componentFileIdIt.next().value;
-    file.name = execInfos.bootFileTemplate.filePath;
-    file.content = execInfos.bootFileTemplate.code;
-    this.execBean.originalFiles.push(file);
-  }
-
-  private mapExecInfosToComponentBean(execInfos: ExecInfos) {
-
-    if (!execInfos) {
-      return;
-    }
-
-    //
-    this.execBean.execInfos = execInfos;
-    this.execBean.description = execInfos.description;
-  }
-
   private resetFilesFromOriginalFile() {
     this.execBean.currentFiles.splice(0);
-    this.execBean.currentFiles.push(...this.execBean.originalFiles.map(f => {
-      const cloned = f.clone();
-      cloned.changeNameEvent.subscribe(
-        this.resetCodeMirrorLanguage.bind(this, cloned)
-      );
-      return cloned;
-    }));
+    this.execBean.currentFiles.push(...this.execBean.originalFiles.map(f => this.cloneExecComponentFileBean(f)));
     this.selectFile(this.execBean.currentFiles[0]);
   }
 
-  private mapComponentBeanToExecParam(): ExecParam {
-    const execParam = new ExecParam();
+  private mapComponentBeanToExecParam(): SrvExecParam {
+    const execParam = new SrvExecParam();
     execParam.idImage = this.params.idImage;
     execParam.files = this.execBean.currentFiles.map(f => {
       return {
@@ -169,29 +143,22 @@ export class ExecComponent implements OnInit {
     return execParam;
   }
 
-
-  private* componentFileIdIterator(): IterableIterator<number> {
-    let id = 0;
-    while (true) yield ++id;
-  }
-
   private createNewFile(): ExecComponentFileBean {
-    const nextId = this.componentFileIdIt.next().value;
-    const newFile: ExecComponentFileBean = new ExecComponentFileBean();
-    newFile.changeNameEvent.subscribe(
-      this.resetCodeMirrorLanguage.bind(this, newFile)
-    );
-    newFile.id = nextId;
+    const newFile: ExecComponentFileBean = this.createNewFileBean({
+      name: '',
+      content: ''
+    });
 
     const fileIndexTag = '#FILE_INDEX#';
     const fileNameTag = '#FILE_NAME#';
 
-    newFile.name = this.execBean.execInfos.newFileTemplate.filePath.replace(fileIndexTag, '' + nextId);
+    newFile.name = this.execBean.execInfos.newFileTemplate.filePath.replace(fileIndexTag, '' + newFile.id);
     newFile.content = this.execBean.execInfos.newFileTemplate.code
       .replace(
-        new RegExp(fileIndexTag, 'g'), '' + nextId)
+        new RegExp(fileIndexTag, 'g'), '' + newFile.id)
       .replace(
         new RegExp(fileNameTag, 'g'), newFile.name);
+
     return newFile;
   }
 
@@ -237,4 +204,95 @@ export class ExecComponent implements OnInit {
         file.codeMirrorOpts.language = CodeMirrorLanguage.NONE;
     }
   }
+
+  private* componentFileIdIterator(): IterableIterator<number> {
+    let id = 0;
+    while (true) yield ++id;
+  }
+
+
+  private initComponentBean(execInfos: ExecInfos) {
+
+    this.execBean.params = this.params;
+    this.execBean.execInfos = execInfos;
+
+    // Si pas d'infos d'execution, on desactive l'execution
+    if (!this.execBean.execInfos) {
+      this.execBean.params.disableExecution = true;
+    }
+
+    this.initOriginalFiles();
+
+  }
+
+  /**
+   * Initialisation des fichiers de reference
+   */
+  private initOriginalFiles() {
+
+    // Si présent, initialisation avec les fichiers en parametres
+    if (this.execBean.params.files && this.execBean.params.files.length > 0) {
+
+      for (const file of this.execBean.params.files) {
+        this.pushNewOriginalFile(file
+        );
+      }
+
+      return;
+    }
+
+    // Sinon initialisation avec le template d'execution
+    if (this.execBean.execInfos && this.execBean.execInfos.bootFileTemplate) {
+
+      this.pushNewOriginalFile({
+        name: this.execBean.execInfos.bootFileTemplate.filePath,
+        content: this.execBean.execInfos.bootFileTemplate.code
+      });
+
+      return;
+    }
+
+    // Sinon initialisation d'un fichier txt vide
+
+    this.pushNewOriginalFile({
+      name: 'README.txt',
+      content: 'Aucun fichier proposé'
+    });
+  }
+
+  /**
+   * Creation d'un nouveau fileBean
+   * @param param
+   */
+  private createNewFileBean(param: ExecFileParam): ExecComponentFileBean {
+    const file: ExecComponentFileBean = new ExecComponentFileBean();
+    file.id = this.componentFileIdIt.next().value;
+    file.param = param;
+    return file;
+  }
+
+  /**
+   * Initialise un nouveau fichier de reference
+   * @param fileName
+   * @param fileContent
+   */
+  private pushNewOriginalFile(param: ExecFileParam) {
+    this.execBean.originalFiles.push(this.createNewFileBean(param));
+  }
+
+  private cloneExecComponentFileBean(bean: ExecComponentFileBean): ExecComponentFileBean {
+
+    const newBean = new ExecComponentFileBean();
+    newBean.id = bean.id;
+    newBean.codeMirrorOpts = bean.codeMirrorOpts;
+    newBean.param = {
+      name: bean.param.name,
+      content: bean.param.content,
+      fileContentReadOnly: bean.param.fileContentReadOnly,
+      fileTitleReadOnly: bean.param.fileTitleReadOnly
+    };
+
+    return newBean;
+  }
+
 }

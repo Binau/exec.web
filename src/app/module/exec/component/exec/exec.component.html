@@ -16,8 +16,8 @@
   </header>
 
   <!-- Tabulation des fichiers + options de fichiers -->
-  <nav class='tabs-wrapper' *ngIf='execBean.displayFilesName'>
-    <ol class='tabs'>
+  <nav class='tabs-wrapper' >
+    <ol *ngIf='execBean.displayFilesName' class='tabs'>
       <li *ngFor='let file of execBean.currentFiles'
           (click)='onClickFile(file)'
           class='tab' [ngClass]='{
@@ -29,7 +29,7 @@
           {{file.name}}
         </span>
 
-        <form class='tab-editWrapper' (submit)='onSubmitFile()'>
+        <form class='tab-editWrapper' (submit)="onSubmitFileName(file)">
           <input title='Nom du fichier'
                  name='fileName'
                  class='tab-editTitle {{file.inputTagName}}' *ngIf='execBean.inFilesEdition'
@@ -45,7 +45,7 @@
 
       </li>
     </ol>
-    <span class='tabs-opts'>
+    <span *ngIf='execBean.displayFilesName' class='tabs-opts'>
 
         <svg *ngIf="execBean.displayEditFiles"
              (click)='onClickEdit()'

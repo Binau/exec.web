@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ExecComponentParam} from '../../component/exec/exec.component.param';
+import {ExecParam} from '../../component/exec/param/exec.param';
 
 @Component({
   selector: 'app-demo-exec',
@@ -16,11 +16,11 @@ export class DemoExecComponent implements OnInit {
   private _displayTitle = true;
 
   public set allowFilesChange(val: boolean) {
-    this.paramDemo1.disableFileChange = !val;
+    this.paramDemo1.filesNameReadOnly = !val;
   }
 
   public get allowFilesChange(): boolean {
-    return !this.paramDemo1.disableFileChange;
+    return !this.paramDemo1.filesNameReadOnly;
   }
 
   public set allowExec(val: boolean) {
@@ -32,11 +32,11 @@ export class DemoExecComponent implements OnInit {
   }
 
   public set displayFiles(val: boolean) {
-    this.paramDemo1.hideFiles = !val;
+    this.paramDemo1.hideFilesName = !val;
   }
 
   public get displayFiles(): boolean {
-    return !this.paramDemo1.hideFiles;
+    return !this.paramDemo1.hideFilesName;
   }
 
   public set displayTitle(val: boolean) {
@@ -48,13 +48,19 @@ export class DemoExecComponent implements OnInit {
     return this._displayTitle;
   }
 
-  public paramDemo1: ExecComponentParam = {
+  public paramDemo1: ExecParam = {
     title: 'Démo composant Java',
     idImage: 'simple-java'
   };
-  public paramDisplayJson: ExecComponentParam = {
+  public paramDisplayJson: ExecParam = {
+    files : [
+      {
+        name : 'test.json',
+        content: '{\n "plop":"val" \n}'
+      }
+    ],
     disableExecution: true,
-    disableFileChange: true
+    filesNameReadOnly: true
   };
 
   constructor() {
