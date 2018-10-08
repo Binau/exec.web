@@ -53,10 +53,11 @@ export class DemoExecComponent implements OnInit {
     idImage: 'simple-java'
   };
   public paramDisplayJson: ExecParam = {
-    files : [
+    files: [
       {
-        name : 'test.json',
-        content: '{\n "plop":"val" \n}'
+        name: 'test.json',
+        content: '{\n "plop":"val"\n}',
+        fileContentReadOnly: true
       }
     ],
     disableExecution: true,

@@ -41,12 +41,17 @@ export class CodeMirrorComponent implements OnInit {
       lineNumbers: true,
       value: this.value,
       mode: this.options.language,
-
+      readOnly: this.options.readOnly
     });
 
     // Changement d'options
     this.options.languageChanged.subscribe((newLanguage) => {
       editor.setOption('mode', newLanguage);
+    });
+
+    // Changement de lecture seule
+    this.options.readOnlyChanged.subscribe((readOnly) => {
+      editor.setOption('readOnly', readOnly);
     });
 
     // Au defocus, Repercution de la valeur sur le parametre entrant

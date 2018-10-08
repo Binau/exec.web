@@ -8,7 +8,6 @@ import {CodeMirrorComponent} from './component/code-mirror/code-mirror.component
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {environment} from '../../../environments/environment';
 
-
 @NgModule({
   imports: [],
   exports: [

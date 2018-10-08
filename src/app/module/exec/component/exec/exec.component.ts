@@ -124,6 +124,10 @@ export class ExecComponent implements OnInit {
     this.resetFilesFromOriginalFile();
   }
 
+  /**
+   * *********************************
+   */
+
   private resetFilesFromOriginalFile() {
     this.execBean.currentFiles.splice(0);
     this.execBean.currentFiles.push(...this.execBean.originalFiles.map(f => this.cloneExecComponentFileBean(f)));
@@ -191,6 +195,9 @@ export class ExecComponent implements OnInit {
 
   private resetCodeMirrorLanguage(file: ExecComponentFileBean): void {
     switch (file.fileNameExtention) {
+      case '.json':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.JSON;
+        break;
       case '.js':
         file.codeMirrorOpts.language = CodeMirrorLanguage.JAVASCRIPT;
         break;
@@ -209,7 +216,6 @@ export class ExecComponent implements OnInit {
     let id = 0;
     while (true) yield ++id;
   }
-
 
   private initComponentBean(execInfos: ExecInfos) {
 
@@ -268,6 +274,11 @@ export class ExecComponent implements OnInit {
     const file: ExecComponentFileBean = new ExecComponentFileBean();
     file.id = this.componentFileIdIt.next().value;
     file.param = param;
+
+    // Mise à jour opts code mirror
+    file.codeMirrorOpts.readOnly = file.param.fileContentReadOnly;
+    this.resetCodeMirrorLanguage.bind(this, file);
+
     return file;
   }
 
@@ -291,6 +302,9 @@ export class ExecComponent implements OnInit {
       fileContentReadOnly: bean.param.fileContentReadOnly,
       fileTitleReadOnly: bean.param.fileTitleReadOnly
     };
+
+    // Mise à jour opts code mirror
+    newBean.codeMirrorOpts.readOnly = newBean.param.fileContentReadOnly;
 
     return newBean;
   }
