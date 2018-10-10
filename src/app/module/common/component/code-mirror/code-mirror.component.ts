@@ -1,9 +1,10 @@
 import {Component, ElementRef, EventEmitter, Host, Input, OnInit, Output, ViewChild} from '@angular/core';
 import * as CodeMirror from 'codemirror';
 // Langages
-import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/shell/shell';
+import 'codemirror/mode/htmlmixed/htmlmixed';
 //
 import {CodeMirrorParam, CodeMirrorLanguage} from './code-mirror.param';
 

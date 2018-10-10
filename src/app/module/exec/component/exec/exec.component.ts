@@ -57,7 +57,15 @@ export class ExecComponent implements OnInit {
   }
 
   /**
-   * Evenements
+   * Methodes utilitaires
+   */
+  public isFileNameInEdition(file: ExecComponentFileBean): boolean {
+    return this.execBean.inFilesEdition && !file.param.fileNameReadOnly;
+  }
+
+
+  /**
+   * EVENEMENTS
    */
   public onClickEdit(): void {
     this.execBean.inFilesEdition = true;
@@ -72,13 +80,11 @@ export class ExecComponent implements OnInit {
   }
 
   public onClickAdd(): void {
-    const newFile: ExecComponentFileBean = this.createNewFile();
-    this.execBean.currentFiles.push(newFile);
-    this.selectFile(newFile);
+    const file = this.addNewFile();
 
     // Selection du input ajouté pour simplifier le nommage
     setTimeout(() => {
-      const input: HTMLInputElement = this.findHtmlChild(newFile.inputTagName);
+      const input: HTMLInputElement = this.findHtmlChild(file.inputTagName);
       input.select();
     });
   }
@@ -116,7 +122,7 @@ export class ExecComponent implements OnInit {
   }
 
   public onSubmitFileName(file: ExecComponentFileBean): void {
-    this.resetCodeMirrorLanguage.bind(this, file);
+    this.resetCodeMirrorLanguage(file);
     this.execBean.inFilesEdition = false;
   }
 
@@ -127,6 +133,40 @@ export class ExecComponent implements OnInit {
   /**
    * *********************************
    */
+
+  private addNewFile(): ExecComponentFileBean {
+
+    const newFile: ExecComponentFileBean = this.createNewFileBean({
+      name: '',
+      content: ''
+    });
+
+    const fileIndexTag = '#FILE_INDEX#';
+    const fileNameTag = '#FILE_NAME#';
+    let fileNameTemplate = 'new#FILE_INDEX#';
+    let fileContentTemplate = '';
+
+    // Creation d'un fichier a partir d'un template fourni TODO
+
+    // Creation d'un fichier a partir d'un template de l'execInfo
+    if (this.execBean.execInfos && this.execBean.execInfos.newFileTemplate) {
+      fileNameTemplate = this.execBean.execInfos.newFileTemplate.filePath;
+      fileContentTemplate = this.execBean.execInfos.newFileTemplate.code;
+    }
+
+    newFile.name = fileNameTemplate.replace(fileIndexTag, '' + newFile.id);
+    newFile.content = fileContentTemplate
+      .replace(
+        new RegExp(fileIndexTag, 'g'), '' + newFile.id)
+      .replace(
+        new RegExp(fileNameTag, 'g'), newFile.name);
+
+
+    this.execBean.currentFiles.push(newFile);
+    this.selectFile(newFile);
+
+    return newFile;
+  }
 
   private resetFilesFromOriginalFile() {
     this.execBean.currentFiles.splice(0);
@@ -147,24 +187,6 @@ export class ExecComponent implements OnInit {
     return execParam;
   }
 
-  private createNewFile(): ExecComponentFileBean {
-    const newFile: ExecComponentFileBean = this.createNewFileBean({
-      name: '',
-      content: ''
-    });
-
-    const fileIndexTag = '#FILE_INDEX#';
-    const fileNameTag = '#FILE_NAME#';
-
-    newFile.name = this.execBean.execInfos.newFileTemplate.filePath.replace(fileIndexTag, '' + newFile.id);
-    newFile.content = this.execBean.execInfos.newFileTemplate.code
-      .replace(
-        new RegExp(fileIndexTag, 'g'), '' + newFile.id)
-      .replace(
-        new RegExp(fileNameTag, 'g'), newFile.name);
-
-    return newFile;
-  }
 
   private selectFile(file: ExecComponentFileBean) {
     this.execBean.selectedFile = file;
@@ -201,8 +223,14 @@ export class ExecComponent implements OnInit {
       case '.js':
         file.codeMirrorOpts.language = CodeMirrorLanguage.JAVASCRIPT;
         break;
+      case '.ts':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.TYPESCRIPT;
+        break;
       case '.java':
         file.codeMirrorOpts.language = CodeMirrorLanguage.JAVA;
+        break;
+      case '.html':
+        file.codeMirrorOpts.language = CodeMirrorLanguage.HTML;
         break;
       case '.sh':
         file.codeMirrorOpts.language = CodeMirrorLanguage.SHELL;
@@ -277,7 +305,7 @@ export class ExecComponent implements OnInit {
 
     // Mise à jour opts code mirror
     file.codeMirrorOpts.readOnly = file.param.fileContentReadOnly;
-    this.resetCodeMirrorLanguage.bind(this, file);
+    this.resetCodeMirrorLanguage(file);
 
     return file;
   }
@@ -300,10 +328,11 @@ export class ExecComponent implements OnInit {
       name: bean.param.name,
       content: bean.param.content,
       fileContentReadOnly: bean.param.fileContentReadOnly,
-      fileTitleReadOnly: bean.param.fileTitleReadOnly
+      fileNameReadOnly: bean.param.fileNameReadOnly
     };
 
     // Mise à jour opts code mirror
+    this.resetCodeMirrorLanguage(newBean);
     newBean.codeMirrorOpts.readOnly = newBean.param.fileContentReadOnly;
 
     return newBean;

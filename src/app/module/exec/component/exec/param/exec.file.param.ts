@@ -6,5 +6,5 @@ export interface ExecFileParam {
   content: string;
 
   fileContentReadOnly?: boolean;
-  fileTitleReadOnly?: boolean;
+  fileNameReadOnly?: boolean;
 }

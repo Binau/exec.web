@@ -2,9 +2,11 @@ import {EventEmitter} from '@angular/core';
 
 export enum CodeMirrorLanguage {
   NONE = '',
-  JAVASCRIPT = 'javascript',
+  JAVASCRIPT = 'text/javascript',
   JSON = 'application/json',
   JAVA = 'text/x-java',
+  HTML = 'text/html',
+  TYPESCRIPT = 'text/typescript',
   SHELL = 'shell'
 }
 

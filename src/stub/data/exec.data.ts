@@ -8,7 +8,7 @@ export const execData: ExecInfos = {
   },
   bootFileTemplate: {
     filePath: 'Main.java',
-    code: 'New code'
+    code: 'public class Main { \n  public static void main (String[] args){ \n    System.out.println("Hello Stub"); \n  } \n}'
   },
   langage: 'java'
 };

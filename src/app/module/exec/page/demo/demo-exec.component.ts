@@ -52,16 +52,66 @@ export class DemoExecComponent implements OnInit {
     title: 'Démo composant Java',
     idImage: 'simple-java'
   };
+
+
+  public text2 = '' +
+    '# Langages\n' +
+    'La coloration syntaxique s\'adapte à l\'extention du fichier.\n' +
+    'Exemples :\n' +
+    '';
   public paramDisplayJson: ExecParam = {
     files: [
       {
         name: 'test.json',
-        content: '{\n "plop":"val"\n}',
-        fileContentReadOnly: true
+        content: '{\n' +
+          ' "plop":"val"\n' +
+          ' "plap":3\n' +
+          ' "list":[3, "58", 7887]\n' +
+          '}',
+        fileContentReadOnly: true,
+        fileNameReadOnly: true,
+      },
+      {
+        name: 'test.html',
+        content: '<html>\n' +
+          '  <body style="display:none;">\n' +
+          '    <test></test>\n' +
+          '  </body>\n' +
+          '</html>',
+        fileContentReadOnly: true,
+        fileNameReadOnly: true,
+      },
+      {
+        name: 'test.component.ts',
+        content: 'export class TestComponent {\n' +
+          '  public constructor(){}\n' +
+          '    \n' +
+          '  \n' +
+          '}',
+        fileContentReadOnly: true,
+        fileNameReadOnly: true,
+      },
+      {
+        name: 'test.java',
+        content: 'public class Main { \n' +
+          '  public static void main (String[] args){\n' +
+          '    System.out.println("Hello Stub");\n' +
+          '  }\n' +
+          '}',
+        fileContentReadOnly: true,
+        fileNameReadOnly: true,
+      },
+      {
+        name: 'test.sh',
+        content: '#!/bin/bash\n' +
+          '\n' +
+          'echo \'Hello Bash\'\n',
+        fileContentReadOnly: true,
+        fileNameReadOnly: true,
       }
     ],
     disableExecution: true,
-    filesNameReadOnly: true
+    filesNameReadOnly: false
   };
 
   constructor() {
