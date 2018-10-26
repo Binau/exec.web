@@ -2,22 +2,6 @@
   Liste des tests
 </p>
 
-<ul class='tests'>
-  <li class='test-wrapper' *ngFor='let test of tests'>
-    <details open>
-      <summary class='test-title'>{{test.title}}</summary>
-      <app-test class='test' [id]='test.id'></app-test>
-    </details>
-  </li>
-</ul>
+<app-files-editor>
 
-
-<p>
-  Executions
-</p>
-
-<app-exec class='exec' [params]='paramJs' ></app-exec>
-<app-exec class='exec' [params]='paramJava' ></app-exec>
-<app-exec class='exec' [params]='paramBash' ></app-exec>
-
-
+</app-files-editor>

@@ -7,6 +7,7 @@ import {MarkdownComponent} from './component/markdown/markdown.component';
 import {CodeMirrorComponent} from './component/code-mirror/code-mirror.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {environment} from '../../../environments/environment';
+import {FilesEditorComponent} from './component/files-editor/files-editor.component';
 
 @NgModule({
   imports: [],
@@ -20,6 +21,7 @@ import {environment} from '../../../environments/environment';
     // Projet
     CodeMirrorComponent,
     MarkdownComponent,
+    FilesEditorComponent,
 
   ],
   providers: [
@@ -28,6 +30,7 @@ import {environment} from '../../../environments/environment';
   declarations: [
     CodeMirrorComponent,
     MarkdownComponent,
+    FilesEditorComponent,
   ]
 })
 export class CommonModule {

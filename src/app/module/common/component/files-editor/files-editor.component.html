@@ -1,0 +1,82 @@
+
+<div class='wrapper'>
+
+  <!-- Onglets des fichiers + options de fichiers -->
+  <nav class='tabs-wrapper' >
+
+  </nav>
+
+
+
+  <!--nav class='tabs-wrapper' >
+    <ol *ngIf='execBean.displayFilesName' class='tabs'>
+      <li *ngFor='let file of execBean.currentFiles'
+          (click)='onClickFile(file)'
+          class='tab' [ngClass]='{
+            "active":execBean.selectedFile===file
+          }'
+      >
+        <span *ngIf='!isFileNameInEdition(file)'
+              class='tab-title' [title]='file.name'>
+          {{file.name}}
+        </span>
+
+        <form class='tab-editWrapper' (submit)="onSubmitFileName(file)">
+          <input title='Nom du fichier'
+                 name='fileName'
+                 class='tab-editTitle {{file.inputTagName}}' *ngIf='isFileNameInEdition(file)'
+                 type='text' [(ngModel)]='file.name'/>
+
+          <svg *ngIf='execBean.inFilesEdition '
+               (click)='onClickDelete(file)'
+               class='tab-delIcon'>
+            <title>Supprimer le fichier</title>
+            <use xlink:href="#Delete"></use>
+          </svg>
+        </form>
+
+      </li>
+    </ol>
+    <span *ngIf='execBean.displayFilesName' class='tabs-opts'>
+
+        <svg *ngIf="execBean.displayEditFiles"
+             (click)='onClickEdit()'
+             class='tabs-editIcon'>
+            <title>Modification des fichiers</title>
+            <use xlink:href="#Settings"></use>
+        </svg>
+        <svg *ngIf='execBean.inFilesEdition'
+             (click)='onClickReset()'
+             class='tabs-resetIcon'>
+            <title>Reset</title>
+            <use xlink:href="#Reset"></use>
+        </svg>
+        <svg *ngIf='execBean.inFilesEdition'
+             (click)='onClickAdd()'
+             class='tabs-addIcon'>
+            <title>Ajouter un fichier</title>
+            <use xlink:href="#Add"></use>
+        </svg>
+
+    </span>
+
+  </nav-->
+
+  <!-- Affichage d'une marge pour remplacer le nom des fichiers -->
+  <!--div class='tabs-hidden' *ngIf='!execBean.displayFilesName'></div>
+
+  <div class='editors-wrapper'>
+    <div class='editor-wrapper' *ngFor='let file of execBean.currentFiles'
+         [ngClass]='{ "active": execBean.selectedFile===file}'>
+      <span class='editor' *ngIf='execBean.selectedFile===file'>
+      <app-code-mirror
+        [(value)]='execBean.selectedFile.content'
+        [options]='execBean.selectedFile.codeMirrorOpts'></app-code-mirror>
+      </span>
+    </div>
+  </div-->
+
+</div>
+
+
+
