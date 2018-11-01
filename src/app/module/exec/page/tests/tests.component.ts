@@ -1,33 +1,36 @@
 import {Component, OnInit} from '@angular/core';
 import {TestsService} from '../../service/tests.service';
-import {TestInfos} from '../../api/test.http.api';
-import {ExecParam} from '../../component/exec/param/exec.param';
+import {TabPanelBean} from '../../../common/component/tab-panel/tab-panel.bean';
+import {TabPanelClickEvent} from '../../../common/component/tab-panel/tab-panel-click.event';
+import {ArrayUtil} from '../../../../tool/array.util';
 
 @Component({
   selector: 'app-tests',
   templateUrl: './tests.component.html',
   styleUrls: ['./tests.component.css']
 })
-export class TestsComponent implements OnInit {
+export class TestsComponent {
 
-  public tests: TestInfos[];
-  public paramJs: ExecParam = {
-    title: 'Titre test',
-    idImage: 'simple-js'
-  };
-  public paramJava: ExecParam = {
-    title: 'Démo composant Java',
-    idImage: 'simple-java'
-  };
-  public paramBash: ExecParam = {
-    idImage: 'simple-bash'
-  };
+  public headers: TabPanelBean[] = ArrayUtil.createObjArray<TabPanelBean>(12, i => {
+    return {
+      label: `Titre - ${i}`
+    };
+  });
 
-  constructor(private testsService: TestsService) {
+  public content1Actif: string;
+  public content2Click: string;
+
+  constructor(
+    private testsService: TestsService
+  ) {
   }
 
-  public async ngOnInit() {
-    this.tests = await this.testsService.getTests();
+  public cancelTabClick(event: TabPanelClickEvent) {
+    event.cancel = true;
+    this.content2Click = `${event.tab.label}`;
   }
 
+  public tab1ActifChange($event: TabPanelBean) {
+    this.content1Actif = $event.label;
+  }
 }

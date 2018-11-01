@@ -1,0 +1,20 @@
+<div class='wrapper'>
+  <nav class='header'>
+
+    <ol class='header-list'>
+      <li *ngFor='let header of headers' (click)='onTabClick(header)'
+          class='header-listItem'
+          [ngClass]='{"active":header.active}'
+      >
+        {{header.label}}
+      </li>
+    </ol>
+
+  </nav>
+
+  <div class='content'
+       [ngClass]='{"resizable":resizable}'
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

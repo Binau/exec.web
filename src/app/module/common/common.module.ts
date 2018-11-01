@@ -8,20 +8,24 @@ import {CodeMirrorComponent} from './component/code-mirror/code-mirror.component
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {environment} from '../../../environments/environment';
 import {FilesEditorComponent} from './component/files-editor/files-editor.component';
+import { TabPanelComponent } from './component/tab-panel/tab-panel.component';
 
 @NgModule({
-  imports: [],
+  imports: [
+    BrowserModule
+  ],
   exports: [
     // Angular
-    ngCommonModule,
+    // ngCommonModule,
     FormsModule,
-    BrowserModule,
+    // BrowserModule,
     HttpClientModule,
     BrowserAnimationsModule,
     // Projet
     CodeMirrorComponent,
     MarkdownComponent,
     FilesEditorComponent,
+    TabPanelComponent,
 
   ],
   providers: [
@@ -31,6 +35,7 @@ import {FilesEditorComponent} from './component/files-editor/files-editor.compon
     CodeMirrorComponent,
     MarkdownComponent,
     FilesEditorComponent,
+    TabPanelComponent,
   ]
 })
 export class CommonModule {

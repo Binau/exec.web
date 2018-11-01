@@ -1,7 +1,20 @@
-<p>
-  Liste des tests
-</p>
+<app-tab-panel style='margin: 20px auto; width: 800px; display: block;'
+               [headers]='headers'
+               [resizable]='true'
+(headerActifChange)='tab1ActifChange($event)'>
 
-<app-files-editor>
+  <p>Content 1</p>
+  <p> - actif : {{content1Actif}}</p>
+  <p> - resisable</p>
+</app-tab-panel>
 
-</app-files-editor>
+<app-tab-panel style='margin: 20px auto; width: 800px; display: block;'
+                               [headers]='headers'
+                               [resizable]='false'
+                               (headerTabClick)='cancelTabClick($event)'>
+
+  <p>Content 2 :</p>
+  <p> - Non resizable</p>
+  <p> - Non selectionnable</p>
+  <p> - Clic sur : {{content2Click}}</p>
+</app-tab-panel>
